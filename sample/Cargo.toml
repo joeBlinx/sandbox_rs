@@ -14,3 +14,6 @@ rand = "0.7"
 nalgebra-glm = "0.7"
 nalgebra = "0.21"
 glish_rs = {path = "../glish_rs"}
+imgui = "0.4"
+imgui-sdl2 = "0.11"
+imgui-opengl-renderer = "0.8"
