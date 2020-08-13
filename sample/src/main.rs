@@ -7,7 +7,6 @@ use glish_rs;
 use crate::handle_event::HandleEvent;
 use nalgebra_glm::make_vec3;
 use obj::{load_obj, Obj, TexturedVertex};
-use std::ffi::CString;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::{Path, PathBuf};
@@ -21,7 +20,7 @@ extern crate rand;
 extern crate sdl2;
 
 fn main() {
-    let window = window::Window::new();
+    let window = window::Window::new((3, 3));
     let sdl = window.sdl();
     let mut event = sdl.event_pump().unwrap();
 

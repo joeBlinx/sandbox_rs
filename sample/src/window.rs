@@ -25,13 +25,14 @@ extern "system" fn debug_callback(
     }
 }
 impl Window {
-    pub(crate) fn new() -> Window {
+    pub(crate) fn new(ogl_version:(u8, u8)) -> Window {
+        let (major, minor) = ogl_version;
         let sdl = sdl2::init().expect("Error while init sdl2");
         let video_subsystem = sdl.video().expect("Error while init sdl video");
         let gl_attr = video_subsystem.gl_attr();
         gl_attr.set_context_flags().debug().set();
         gl_attr.set_context_profile(sdl2::video::GLProfile::Core);
-        gl_attr.set_context_version(4, 5);
+        gl_attr.set_context_version(major, minor);
         let window = video_subsystem
             .window("Tartes aux poireaux", 1366, 768)
             .opengl()
@@ -47,17 +48,19 @@ impl Window {
         unsafe {
             gl::ClearColor(0.5, 0.5, 0.5, 1.);
             gl::Enable(gl::DEPTH_TEST);
-            gl::Enable(gl::DEBUG_OUTPUT);
-            gl::Enable(gl::DEBUG_OUTPUT_SYNCHRONOUS);
-            gl::DebugMessageCallback(Some(debug_callback), std::ptr::null());
-            gl::DebugMessageControl(
-                gl::DONT_CARE,
-                gl::DONT_CARE,
-                gl::DONT_CARE,
-                0,
-                std::ptr::null(),
-                gl::TRUE,
-            )
+            if (major == 4 && minor >= 2 )|| major > 4{
+                gl::Enable(gl::DEBUG_OUTPUT);
+                gl::Enable(gl::DEBUG_OUTPUT_SYNCHRONOUS);
+                gl::DebugMessageCallback(Some(debug_callback), std::ptr::null());
+                gl::DebugMessageControl(
+                    gl::DONT_CARE,
+                    gl::DONT_CARE,
+                    gl::DONT_CARE,
+                    0,
+                    std::ptr::null(),
+                    gl::TRUE,
+                )
+            }
         }
         Window {
             sdl,
