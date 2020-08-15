@@ -1,0 +1,10 @@
+build:
+    stage : build
+    script: cargo build
+    tags:
+        - rust
+    
+    
+stages:
+    - build
+    
