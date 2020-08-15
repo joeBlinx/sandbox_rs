@@ -1,0 +1,10 @@
+build:
+    stage : build
+    script: echo $PATH
+    tags:
+        - rust
+    
+    
+stages:
+    - build
+    
