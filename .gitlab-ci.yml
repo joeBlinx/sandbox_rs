@@ -1,6 +1,6 @@
 build:
     stage : build
-    script: echo $PATH
+    script: cargo build
     tags:
         - rust
     
