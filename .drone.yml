@@ -4,7 +4,7 @@ name: default
 
 steps:
 - name: build
-  image: rust
+  image: rust_docker
   commands:
   - cargo build
 - name: doc
