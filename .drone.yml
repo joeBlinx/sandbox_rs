@@ -5,6 +5,7 @@ name: default
 steps:
 - name: build
   image: rust_docker
+  pull : never
   commands:
   - cargo build
 - name: doc
