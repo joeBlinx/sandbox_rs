@@ -3,6 +3,13 @@ type: docker
 name: default
 
 steps:
+- name: build_image
+  image: docker
+  volumes:
+  - name : build_docker
+    path: /var/run/docker.sock
+  commands :
+    - docker build docker/ -t rust_docker
 - name: build
   image: rust_docker
   pull : never
@@ -12,3 +19,8 @@ steps:
   image: rust
   commands:
   - cargo doc
+
+volumes:
+  - name: build_docker
+    host:
+      path: /var/run/docker.sock
