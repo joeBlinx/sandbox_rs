@@ -10,15 +10,18 @@ steps:
     path: /var/run/docker.sock
   commands :
     - docker build docker/ -t rust_docker
+
+- name: doc
+  image: rust
+  commands:
+  - cargo doc
+  detach: true
+
 - name: build
   image: rust_docker
   pull : never
   commands:
   - cargo build
-- name: doc
-  image: rust
-  commands:
-  - cargo doc
 
 volumes:
   - name: build_docker
