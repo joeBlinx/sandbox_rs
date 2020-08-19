@@ -1,6 +1,8 @@
 kind: pipeline
 type: docker
 name: default
+workspace:
+  path: /workspace
 
 steps:
 - name: build_image
@@ -13,12 +15,18 @@ steps:
 
 - name: doc
   image: rust
+  volumes:
+  - name: workspace_volume
+    path: /workspace
   commands:
   - cargo doc
   detach: true
 
 - name: build
   image: rust_docker
+  volumes:
+    - name: workspace_volume
+      path: /workspace
   pull : never
   commands:
   - cargo build
@@ -27,3 +35,6 @@ volumes:
   - name: build_docker
     host:
       path: /var/run/docker.sock
+  - name: workspace_volume
+    host:
+      path: /home/okou/docker-runner/workspace
