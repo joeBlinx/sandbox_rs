@@ -38,7 +38,12 @@ steps:
     webhook_id: 744564358033703026
     webhook_token: tCdv9yMJPzIJZmxH4-1mnkbQsUEBSr7pCw3zMGwjTAGuO7iixrzz7swsKaNiE5Ult_DQ
     tts: true
-    message: "Discord web hook test"
+    message: >
+      {{#success build.status}}
+        build {{build.number}} succeeded. Good job.
+      {{else}}
+        build {{build.number}} failed. Fix me please.
+      {{/success}}
 
 volumes:
   - name: build_docker
