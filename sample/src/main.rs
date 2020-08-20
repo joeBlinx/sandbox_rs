@@ -1,4 +1,3 @@
-mod imgui_wrap;
 mod camera;
 mod handle_event;
 mod load;
@@ -11,7 +10,7 @@ use crate::sample_3d::Sample3d;
 use crate::traits::Draw;
 use nalgebra_glm::make_vec3;
 use std::path::Path;
-use imgui::{Window, Condition, im_str, Context};
+use imgui::{Window, Condition, im_str};
 
 extern crate gl;
 extern crate rand;
@@ -26,13 +25,16 @@ fn main() {
 
     let mut sample_3d = Sample3d::new(Path::new("assets/sphere.obj"), Path::new("assets/lava.png"));
     let mut skybox = skybox::Skybox::new(Path::new("assets/skybox"));
-    let mut imgui = window.create_imgui();
+    //Imgui creation
+    let (mut imgui, mut imgui_sdl2, renderer) = window.create_imgui();
+   
+    //
     let mut choose = 0;
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
             cam.handle_event(&event);
-            imgui.handle_event(&event);
+            imgui_sdl2.handle_event(&mut imgui, &event);
             match event {
                 sdl2::event::Event::Quit { .. } => break 'main,
                 sdl2::event::Event::KeyDown { keycode, .. } => {
@@ -45,7 +47,7 @@ fn main() {
                 _ => {}
             }
         }
-        // imgui_sdl2.prepare_frame(imgui.io_mut(), window.get_sdl2_window(), &event_pump.mouse_state());
+        imgui_sdl2.prepare_frame(imgui.io_mut(), window.window_sdl2(), &event_pump.mouse_state());
 
         let ui = imgui.frame();
         Window::new(im_str!("Hello world"))
@@ -66,7 +68,8 @@ fn main() {
         sample_3d.draw(&cam);
         skybox.draw(&cam);
 
-        imgui.render(ui);
+        imgui_sdl2.prepare_render(&ui, window.window_sdl2());
+        renderer.render(ui);
         let ten_millis = std::time::Duration::from_millis(17);
         std::thread::sleep(ten_millis);
         window.refresh();

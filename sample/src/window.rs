@@ -2,7 +2,6 @@ extern crate gl;
 extern crate sdl2;
 use gl::types::*;
 use std::ffi::{c_void, CStr};
-use crate::imgui_wrap;
 
 pub struct Window {
     sdl: sdl2::Sdl,
@@ -89,9 +88,18 @@ impl Window {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
-    pub fn create_imgui(&self) -> imgui_wrap::Imgui<'_> {
-        imgui_wrap::Imgui::new(&self.window, &self.video_subsystem)
+    pub fn create_imgui(&self) -> (imgui::Context, imgui_sdl2::ImguiSdl2, imgui_opengl_renderer::Renderer){
+        
+        let mut imgui = imgui::Context::create();
+        imgui.set_ini_filename(None);
+        let imgui_sdl2 = imgui_sdl2::ImguiSdl2::new(&mut imgui, &self.window);
+        let renderer = imgui_opengl_renderer::Renderer::new(&mut imgui, |s| self.video_subsystem.gl_get_proc_address(s) as _);
+
+        (imgui, imgui_sdl2, renderer)
     }
 
+    pub fn window_sdl2(&self) -> &sdl2::video::Window{
+        &self.window
+    }
 
 }
