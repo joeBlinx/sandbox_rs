@@ -19,7 +19,7 @@ steps:
     path : /drone/src
   commands:
   - cargo doc
-  detach: true
+  failure: ignore
 
 - name: build
   image: rust_docker
