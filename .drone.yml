@@ -14,14 +14,22 @@ steps:
 
 - name: doc
   image: rust
+  volumes:
+  - name : cache
+    path : /workspace/build
   commands:
+  - export CARGO_TARGET_DIR=/workspace/build
   - cargo doc
   detach: true
 
 - name: build
   image: rust_docker
   pull : never
+  volumes:
+  - name : cache
+    path : /workspace/build
   commands:
+  - export CARGO_TARGET_DIR=/workspace/build
   - cargo build
 
 - name: discord notification
@@ -36,3 +44,6 @@ volumes:
   - name: build_docker
     host:
       path: /var/run/docker.sock
+  - name: cache
+    host:
+      path: /tmp
