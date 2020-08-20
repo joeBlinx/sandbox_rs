@@ -1,7 +1,8 @@
 kind: pipeline
 type: docker
 name: default
-
+workspace:
+  -path: /workspace
 steps:
 - name: build_image
   image: docker
