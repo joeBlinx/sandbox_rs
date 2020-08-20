@@ -16,18 +16,20 @@ steps:
   image: rust
   volumes:
   - name : cache
-    path : /drone/src
+    path : /workspace/build
   commands:
+  - export CARGO_TARGET_DIR=/workspace/build
   - cargo doc
-  failure: ignore
+  detach: true
 
 - name: build
   image: rust_docker
   pull : never
   volumes:
   - name : cache
-    path : /drone/src
+    path : /workspace/build
   commands:
+  - export CARGO_TARGET_DIR=/workspace/build
   - cargo build
 
 - name: discord notification
@@ -44,4 +46,4 @@ volumes:
       path: /var/run/docker.sock
   - name: cache
     host:
-      path: /tmp
+      path: /tmp/drone
