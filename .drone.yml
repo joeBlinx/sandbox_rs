@@ -1,8 +1,8 @@
 kind: pipeline
 type: docker
 name: default
-workspace:
-  -path: /workspace
+
+
 steps:
 - name: build_image
   image: docker
@@ -23,6 +23,14 @@ steps:
   pull : never
   commands:
   - cargo build
+
+- name: discord notification
+  image: appleboy/drone-discord
+  settings:
+    webhook_id: 744564358033703026
+    webhook_token: tCdv9yMJPzIJZmxH4-1mnkbQsUEBSr7pCw3zMGwjTAGuO7iixrzz7swsKaNiE5Ult_DQ
+    tts: true
+    message: "Discord web hook test"
 
 volumes:
   - name: build_docker
