@@ -18,6 +18,7 @@ steps:
   - name : cache
     path : /workspace/build
   commands:
+  - export CARGO_HOME=/workspace/build/cargo_cache
   - export CARGO_TARGET_DIR=/workspace/build
   - cargo doc
   detach: true
@@ -29,6 +30,7 @@ steps:
   - name : cache
     path : /workspace/build
   commands:
+  - export CARGO_HOME=/workspace/build/cargo_cache
   - export CARGO_TARGET_DIR=/workspace/build
   - cargo build
 
