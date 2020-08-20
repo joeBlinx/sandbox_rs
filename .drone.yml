@@ -16,9 +16,8 @@ steps:
   image: rust
   volumes:
   - name : cache
-    path : /workspace/build
+    path : /drone/src
   commands:
-  - export CARGO_TARGET_DIR=/workspace/build
   - cargo doc
   detach: true
 
@@ -27,9 +26,8 @@ steps:
   pull : never
   volumes:
   - name : cache
-    path : /workspace/build
+    path : /drone/src
   commands:
-  - export CARGO_TARGET_DIR=/workspace/build
   - cargo build
 
 - name: discord notification
