@@ -5,6 +5,7 @@ mod sample_3d;
 mod skybox;
 mod traits;
 mod window;
+mod imgui_wrap;
 use crate::handle_event::HandleEvent;
 use crate::sample_3d::Sample3d;
 use crate::traits::Draw;
@@ -26,50 +27,52 @@ fn main() {
     let mut sample_3d = Sample3d::new(Path::new("assets/sphere.obj"), Path::new("assets/lava.png"));
     let mut skybox = skybox::Skybox::new(Path::new("assets/skybox"));
     //Imgui creation
-    let (mut imgui, mut imgui_sdl2, renderer) = window.create_imgui();
+    let mut imgui = window.create_imgui();
    
     //
     let mut choose = 0;
+    let mut display_gui = false;
+    let mut gui = |ui: &imgui::Ui|
+        {
+            ui.text(im_str!("Hello world!"));
+            ui.text(im_str!("こんにちは世界！"));
+            ui.text(im_str!("This...is...imgui-rs!"));
+            ui.list_box(im_str!("Hello"), &mut choose, &[
+                &im_str!("pouet"), &im_str!("prout")], 2);
+            ui.separator();
+            let mouse_pos = ui.io().mouse_pos;
+            ui.text(format!(
+                "Mouse Position: ({:.1},{:.1})",
+                mouse_pos[0], mouse_pos[1]
+            ));
+        };
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
             cam.handle_event(&event);
-            imgui_sdl2.handle_event(&mut imgui, &event);
+            imgui.handle_event(&event);
             match event {
                 sdl2::event::Event::Quit { .. } => break 'main,
                 sdl2::event::Event::KeyDown { keycode, .. } => {
                     let keycode = keycode.unwrap();
                     match keycode {
                         sdl2::keyboard::Keycode::Escape => break 'main,
+                        sdl2::keyboard::Keycode::F2 => display_gui = !display_gui,
                         _ => {}
                     }
                 }
                 _ => {}
             }
         }
-        imgui_sdl2.prepare_frame(imgui.io_mut(), window.window_sdl2(), &event_pump.mouse_state());
-
-        let ui = imgui.frame();
-        Window::new(im_str!("Hello world"))
-            .size([300.0, 100.0], Condition::FirstUseEver)
-            .build(&ui, || {
-                ui.text(im_str!("Hello world!"));
-                ui.text(im_str!("こんにちは世界！"));
-                ui.text(im_str!("This...is...imgui-rs!"));
-                ui.list_box(im_str!("Hello"), &mut choose, &[
-                    &im_str!("pouet"), &im_str!("prout")], 2);
-                ui.separator();
-                let mouse_pos = ui.io().mouse_pos;
-                ui.text(format!(
-                    "Mouse Position: ({:.1},{:.1})",
-                    mouse_pos[0], mouse_pos[1]
-                ));
-            });
         sample_3d.draw(&cam);
         skybox.draw(&cam);
-
-        imgui_sdl2.prepare_render(&ui, window.window_sdl2());
-        renderer.render(ui);
+        if display_gui{
+            imgui.render(&event_pump.mouse_state(), |ui|{
+                Window::new(im_str!("Hello world"))
+            .size([300.0, 100.0], Condition::FirstUseEver)
+            .build(&ui, || gui(&ui));
+            });
+        }
         let ten_millis = std::time::Duration::from_millis(17);
         std::thread::sleep(ten_millis);
         window.refresh();
