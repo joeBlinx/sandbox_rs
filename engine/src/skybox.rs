@@ -10,7 +10,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
-pub(crate) struct Skybox {
+pub struct Skybox {
     vao: Vao,
     opengl_prog: Program,
     texture: Texture,

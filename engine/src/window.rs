@@ -30,7 +30,7 @@ extern "system" fn debug_callback(
 }
 
 impl Window {
-    pub(crate) fn new(ogl_version:(u8, u8)) -> Window {
+    pub fn new(ogl_version:(u8, u8)) -> Window {
         let (major, minor) = ogl_version;
         let sdl = sdl2::init().expect("Error while init sdl2");
         let video_subsystem = sdl.video().expect("Error while init sdl video");
