@@ -2,13 +2,15 @@ extern crate gl;
 extern crate sdl2;
 use gl::types::*;
 use std::ffi::{c_void, CStr};
-
-pub(crate) struct Window {
+use crate::imgui_wrap::ImguiWrap;
+pub struct Window {
     sdl: sdl2::Sdl,
-    _video_subsystem: sdl2::VideoSubsystem,
+    video_subsystem: sdl2::VideoSubsystem,
     window: sdl2::video::Window,
     _gl_context: sdl2::video::GLContext,
+
 }
+
 extern "system" fn debug_callback(
     _source: GLenum,
     _gltype: GLenum,
@@ -19,13 +21,16 @@ extern "system" fn debug_callback(
     _user_param: *mut c_void,
 ) {
     let string = unsafe { CStr::from_ptr(message) };
-    println!("{:?}", string);
+    if severity >= gl::DEBUG_SEVERITY_LOW{
+        println!("{:?}", string);
+    }
     if severity == gl::DEBUG_SEVERITY_HIGH {
         panic!("Unrecovable error");
     }
 }
+
 impl Window {
-    pub(crate) fn new(ogl_version:(u8, u8)) -> Window {
+    pub fn new(ogl_version:(u8, u8)) -> Window {
         let (major, minor) = ogl_version;
         let sdl = sdl2::init().expect("Error while init sdl2");
         let video_subsystem = sdl.video().expect("Error while init sdl video");
@@ -64,17 +69,17 @@ impl Window {
         }
         Window {
             sdl,
-            _video_subsystem: video_subsystem,
             window,
+            video_subsystem,
             _gl_context: gl_context,
         }
     }
 
-    pub(crate) fn sdl(&self) -> &sdl2::Sdl {
+    pub fn sdl(&self) -> &sdl2::Sdl {
         &self.sdl
     }
 
-    pub(crate) fn refresh(&self) {
+    pub fn refresh(&self) {
         self.window.gl_swap_window();
     }
 
@@ -83,4 +88,9 @@ impl Window {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
+    pub fn create_imgui(&self) -> ImguiWrap{
+        
+        ImguiWrap::new(&self.video_subsystem, &self.window)
+    }
+
 }

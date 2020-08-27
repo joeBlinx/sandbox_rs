@@ -3,4 +3,5 @@
 members = [
 	"sample",
 	"glish_rs",
+	"engine"
 ]

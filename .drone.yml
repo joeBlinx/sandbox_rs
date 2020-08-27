@@ -47,6 +47,10 @@ steps:
       {{else}}
         build {{build.number}} failed. Fix me please.
       {{/success}}
+    when:
+      status:
+      - failure
+      - success
 
 volumes:
   - name: build_docker
