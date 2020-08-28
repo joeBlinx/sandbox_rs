@@ -1,12 +1,61 @@
 use nalgebra_glm::make_vec3;
 use std::path::Path;
 use imgui::{Window, Condition, im_str};
-use engine::{camera, window, skybox, sample_3d::Sample3d, handle_event::HandleEvent, traits::Draw};
+use engine::{camera, 
+    window, skybox, 
+    sample_3d::Sample3d, 
+    handle_event::HandleEvent, 
+    traits::Draw,
+    imgui_wrap::ImguiWrap
+};
 extern crate gl;
 extern crate rand;
 extern crate sdl2;
 
+fn get_all_obj<'a>() -> Vec<imgui::ImString>{
+    let assets_path = Path::new("assets");
+    let mut obj_arrays = std::vec::Vec::new();
+    for it in std::fs::read_dir(assets_path).unwrap() {
+        let file = it.unwrap().path();
+        if let Some(ext) = file.extension(){
+            if ext == "obj" {
+                let file = file.to_str().unwrap();
+                let file = String::from(file);
+                obj_arrays.push(imgui::ImString::from(file));
+            }
+        }
+    }
+   
+    obj_arrays
+}
 
+fn create_imgui(choose: &mut i32, obj_arrays: &Vec<imgui::ImString>, 
+    imgui: &mut ImguiWrap,
+    event_pump :&sdl2::EventPump
+) {
+    let mut obj_ref_arrays = Vec::new();
+    for it in obj_arrays.iter() {
+        obj_ref_arrays.push(it);
+    }
+    imgui.render(&event_pump.mouse_state(), |ui|{
+            Window::new(im_str!("Hello world"))
+            .size([300.0, 500.0], Condition::FirstUseEver)
+            .build(&ui, || 
+                {
+                ui.text(im_str!("Hello world!"));
+                ui.text(im_str!("こんにちは世界！"));
+                ui.text(im_str!("This...is...imgui-rs!"));
+                ui.list_box(im_str!("Hello"), choose, 
+                &obj_ref_arrays[..], obj_ref_arrays.len() as i32);
+                ui.separator();
+                let mouse_pos = ui.io().mouse_pos;
+                ui.text(format!(
+                    "Mouse Position: ({:.1},{:.1})",
+                    mouse_pos[0], mouse_pos[1]
+                ));
+                });
+            });
+}
 fn main() {
     let window = window::Window::new((3, 3));
     let sdl = window.sdl();
@@ -20,23 +69,8 @@ fn main() {
     //
     let mut choose = 0;
     let mut display_gui = false;
-    let assets_path = Path::new("assets");
-    let mut obj_arrays = std::vec::Vec::new();
-    let mut obj_ref_arrays = std::vec::Vec::new();
-    for it in std::fs::read_dir(assets_path).unwrap() {
-        let file = it.unwrap().path();
-        if let Some(ext) = file.extension(){
-            if ext == "obj" {
-                let file = file.to_str().unwrap();
-                let file = String::from(file);
-                obj_arrays.push(imgui::ImString::from(file));
-            }
-        }
-    }
-    for it in obj_arrays.iter() {
-        obj_ref_arrays.push(it);
-    }
-    
+   
+    let obj_arrays = get_all_obj();
     let mut sample_3d = Sample3d::new(Path::new(obj_arrays.first().unwrap().to_str()), Path::new("assets/lava.png"));
     'main: loop {
         window.clear();
@@ -60,25 +94,7 @@ fn main() {
         sample_3d.draw(&cam);
         skybox.draw(&cam);
         if display_gui{
-            let mut gui = |ui: &imgui::Ui|
-            {
-            ui.text(im_str!("Hello world!"));
-            ui.text(im_str!("こんにちは世界！"));
-            ui.text(im_str!("This...is...imgui-rs!"));
-            ui.list_box(im_str!("Hello"), &mut choose, 
-            &obj_ref_arrays[..], obj_ref_arrays.len() as i32);
-            ui.separator();
-            let mouse_pos = ui.io().mouse_pos;
-            ui.text(format!(
-                "Mouse Position: ({:.1},{:.1})",
-                mouse_pos[0], mouse_pos[1]
-            ));
-            };
-            imgui.render(&event_pump.mouse_state(), |ui|{
-                Window::new(im_str!("Hello world"))
-            .size([300.0, 500.0], Condition::FirstUseEver)
-            .build(&ui, || gui(&ui));
-            });
+           create_imgui(&mut choose, &obj_arrays, &mut imgui, &event_pump);
         }
         if old_one != choose {
             sample_3d = Sample3d::new(Path::new(obj_arrays[choose as usize].to_str()), Path::new("assets/lava.png"));
