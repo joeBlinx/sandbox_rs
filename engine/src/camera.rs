@@ -30,8 +30,9 @@ impl Camera {
     pub fn get_position(&self) -> &nalgebra_glm::Vec3 {
         &self.position
     }
-    pub fn _move_xyz(&mut self, xyz: &[f32]) {
+    pub fn move_xyz(&mut self, xyz: &[f32]) {
         self.position += nalgebra_glm::make_vec3(xyz);
+        self.center += nalgebra_glm::make_vec3(xyz);
     }
     pub fn move_sphere(&mut self, rho: f32, teta: f32, phi: f32) {
         let (cur_rho, cur_teta, cur_phi) = carthesian_to_spherical(&self.position);
@@ -49,19 +50,32 @@ impl HandleEvent for Camera {
                 let keycode = keycode.unwrap();
                 let teta = PI / 180.;
                 let phi = PI / 180.;
+                let delta = 0.5;
                 match keycode {
-                    Keycode::Left | Keycode::Q => {
+                    Keycode::Q => {
                         self.move_sphere(0., 0., phi);
-                    }
-                    Keycode::Right | Keycode::D => {
+                    },
+                    Keycode::D => {
                         self.move_sphere(0., 0., -phi);
-                    }
-                    Keycode::Up | Keycode::Z => {
+                    },
+                    Keycode::Z => {
                         self.move_sphere(0., teta, 0.);
-                    }
-                    Keycode::Down | Keycode::S => {
+                    },
+                    Keycode::S => {
                         self.move_sphere(0., -teta, 0.);
-                    }
+                    },
+                    Keycode::Left => {
+                        self.move_xyz(&[-delta, 0., 0.]);
+                    },
+                    Keycode::Right => {
+                        self.move_xyz(&[delta, 0., 0.]);
+                    },
+                    Keycode::Up => {
+                        self.move_xyz(&[0., delta, 0.]);
+                    },
+                    Keycode::Down => {
+                        self.move_xyz(&[0., -delta, 0.]);
+                    },
                     _ => {}
                 }
             }
