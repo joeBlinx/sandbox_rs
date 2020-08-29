@@ -1,14 +1,13 @@
 extern crate gl;
 extern crate sdl2;
+use crate::imgui_wrap::ImguiWrap;
 use gl::types::*;
 use std::ffi::{c_void, CStr};
-use crate::imgui_wrap::ImguiWrap;
 pub struct Window {
     sdl: sdl2::Sdl,
     video_subsystem: sdl2::VideoSubsystem,
     window: sdl2::video::Window,
     _gl_context: sdl2::video::GLContext,
-
 }
 
 extern "system" fn debug_callback(
@@ -21,7 +20,7 @@ extern "system" fn debug_callback(
     _user_param: *mut c_void,
 ) {
     let string = unsafe { CStr::from_ptr(message) };
-    if severity >= gl::DEBUG_SEVERITY_LOW{
+    if severity >= gl::DEBUG_SEVERITY_LOW {
         println!("{:?}", string);
     }
     if severity == gl::DEBUG_SEVERITY_HIGH {
@@ -30,7 +29,7 @@ extern "system" fn debug_callback(
 }
 
 impl Window {
-    pub fn new(ogl_version:(u8, u8)) -> Window {
+    pub fn new(ogl_version: (u8, u8)) -> Window {
         let (major, minor) = ogl_version;
         let sdl = sdl2::init().expect("Error while init sdl2");
         let video_subsystem = sdl.video().expect("Error while init sdl video");
@@ -53,7 +52,7 @@ impl Window {
         unsafe {
             gl::ClearColor(0.5, 0.5, 0.5, 1.);
             gl::Enable(gl::DEPTH_TEST);
-            if (major == 4 && minor >= 2 )|| major > 4{
+            if (major == 4 && minor >= 2) || major > 4 {
                 gl::Enable(gl::DEBUG_OUTPUT);
                 gl::Enable(gl::DEBUG_OUTPUT_SYNCHRONOUS);
                 gl::DebugMessageCallback(Some(debug_callback), std::ptr::null());
@@ -88,9 +87,7 @@ impl Window {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
-    pub fn create_imgui(&self) -> ImguiWrap{
-        
+    pub fn create_imgui(&self) -> ImguiWrap {
         ImguiWrap::new(&self.video_subsystem, &self.window)
     }
-
 }
