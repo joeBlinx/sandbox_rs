@@ -20,8 +20,8 @@ pub struct Sample3d {
 
 impl Sample3d {
     pub fn new(obj_path: &Path, texture_path: &Path) -> Result<Self, String> {
-        let vert_shader = Shader::from_vert_file(&Path::new("assets/triangle.vert")).unwrap();
-        let frag_shader = Shader::from_frag_file(&Path::new("assets/triangle.frag")).unwrap();
+        let vert_shader = Shader::from_vert_file(&Path::new("assets/shader/vertex/triangle.vert")).unwrap();
+        let frag_shader = Shader::from_frag_file(&Path::new("assets/shader/fragment/triangle.frag")).unwrap();
         let shader_program = Program::from_shaders(&[vert_shader, frag_shader]).unwrap();
 
         let input = BufReader::new(File::open(obj_path).unwrap());

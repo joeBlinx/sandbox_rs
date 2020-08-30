@@ -24,10 +24,10 @@ pub struct Plane{
 impl Default for Plane{
     fn default() -> Self{
         let vertices = [
-          -1., -1., 0., 1., //1    
-          1., 1., 1., 0., //2
-          -1., 1., 0., 0., //3
-          1., -1., 1., 1. //4
+          -1., -1., 0., 1., 0., 0., 1., //1    
+          1., 1., 1., 0., 0., 0., 1.,//2
+          -1., 1., 0., 0., 0., 0., 1.,//3
+          1., -1., 1., 1., 0., 0., 1.,//4
         ];
         let indices = [
             0, 1, 2,
@@ -38,14 +38,20 @@ impl Default for Plane{
             VboSettings{
                 location: 0,
                 size: 2,
-                stride: 4,
+                stride: 7,
                 offset: 0
             },
             VboSettings{
                 location: 2,
                 size: 2,
-                stride: 4,
+                stride: 7,
                 offset: 2
+            },
+            VboSettings{
+                location: 1,
+                size: 3,
+                stride: 7,
+                offset: 4
             }
         ];
         let vbo = buffer::Vbo::create(vertices.to_vec());

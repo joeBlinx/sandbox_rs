@@ -25,8 +25,21 @@ impl Texture {
             target: gl::TEXTURE_2D,
         };
         texture.bind();
+        let format;
+        if let Some(extension) = path_to_file.extension(){
+            let extension = extension.to_str().unwrap();
+            match extension {
+                "jpg" => format = gl::RGB,
+                "png" => format = gl::RGBA,
+                _ => {
+                    return Err(format!("Extension {} not handle find in path {:?}", extension, path_to_file));
+                }
+            }
+        }else{
+            return Err(format!("No extension find in path {:?}", path_to_file));
+        }
         unsafe {
-            tex_image_2d_from_file(path_to_file, target, gl::RGBA)?;
+            tex_image_2d_from_file(path_to_file, target, format)?;
             gl::TexParameteri(
                 target,
                 gl::TEXTURE_MAG_FILTER,

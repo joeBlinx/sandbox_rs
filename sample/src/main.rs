@@ -15,7 +15,7 @@ extern crate gl;
 extern crate rand;
 extern crate sdl2;
 fn get_all_obj<'a>() -> Vec<imgui::ImString> {
-    let assets_path = Path::new("assets");
+    let assets_path = Path::new("assets/obj");
     let mut obj_arrays = std::vec::Vec::new();
     for it in std::fs::read_dir(assets_path).unwrap() {
         let file = it.unwrap().path();
@@ -34,6 +34,7 @@ struct DebugGui {
     obj_arrays: Vec<imgui::ImString>,
     choose: Rc<i32>,
     old_one: i32,
+    normal_map: Rc<bool>
 }
 impl Default for DebugGui {
     fn default() -> Self {
@@ -41,6 +42,7 @@ impl Default for DebugGui {
             obj_arrays: get_all_obj(),
             choose: Rc::new(0),
             old_one: 0,
+            normal_map: Rc::new(false)
         }
     }
 }
@@ -48,6 +50,7 @@ impl DebugGui {
     fn create_gui(&self, imgui: &mut ImguiWrap) {
         let copy = self.obj_arrays.clone();
         let mut copy_choose = Rc::clone(&self.choose);
+        let mut copy_normal_map = Rc::clone(&self.normal_map);
         imgui.add_item(Rc::new(move |ui: &imgui::Ui| {
             {
                 let mut obj_ref_arrays = Vec::new();
@@ -61,6 +64,9 @@ impl DebugGui {
                         &obj_ref_arrays,
                         obj_ref_arrays.len() as i32,
                     );
+                    ui.checkbox(im_str!("Use normal_map"), 
+                        Rc::get_mut_unchecked(&mut copy_normal_map)
+                    )
                 }
             };
         }));
@@ -76,6 +82,9 @@ impl DebugGui {
     fn get_obj_path(&self) -> &Path {
         &Path::new(self.obj_arrays[self.old_one as usize].to_str())
     }
+    fn use_normal_map(&self) -> bool{
+        *self.normal_map
+    }
 }
 
 fn main() {
@@ -89,14 +98,15 @@ fn main() {
     let mut plane = plane::Plane::new_with_shaders(&[
         ShaderSettings{
             stage: gl::VERTEX_SHADER,
-            path: Path::new("assets/triangle.vert")
+            path: Path::new("assets/shader/vertex/triangle.vert")
         },
         ShaderSettings{
             stage: gl::FRAGMENT_SHADER,
-            path: Path::new("assets/triangle.frag")
+            path: Path::new("assets/shader/fragment/triangle.frag")
         }
     ]);
-    plane.add_textures("lava_texture", Path::new("assets/lava.png"));
+    plane.add_textures("lava_texture", Path::new("assets/normal_mapping/brickwall.jpg"));
+    plane.add_textures("normal_map", Path::new("assets/normal_mapping/brickwall_normal.jpg"));
     let mut imgui = window.create_imgui();
     imgui.add_item(Rc::new(|ui| {
         ui.text(im_str!("Hello world!"));
@@ -107,7 +117,7 @@ fn main() {
     let mut display_gui = false;
     let mut debug_gui = DebugGui::default();
     debug_gui.create_gui(&mut imgui);
-    let mut sample_3d = Sample3d::new(debug_gui.get_obj_path(), Path::new("assets/lava.png")).unwrap();
+    let mut _sample_3d = Sample3d::new(debug_gui.get_obj_path(), Path::new("assets/lava.png")).unwrap();
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
@@ -134,8 +144,15 @@ fn main() {
             imgui.render(&event_pump.mouse_state());
         }
         match debug_gui.get_obj_path_if_change() {
-            Some(path) => sample_3d = Sample3d::new(path, Path::new("assets/lava.png")).unwrap(),
+            Some(path) => _sample_3d = Sample3d::new(path, Path::new("assets/lava.png")).unwrap(),
             _ => {}
+        }
+        if debug_gui.use_normal_map(){
+            plane.add_shader(gl::FRAGMENT_SHADER, 
+                &Path::new("assets/shader/fragment/normal_mapping.frag"));
+        } else{
+            plane.add_shader(gl::FRAGMENT_SHADER, 
+                &Path::new("assets/shader/fragment/triangle.frag"));
         }
         let ten_millis = std::time::Duration::from_millis(17);
         std::thread::sleep(ten_millis);

@@ -30,7 +30,7 @@ fn create_skybox_textures(skybox_texture_folder: &Path) -> Result<Texture, Strin
 }
 impl Skybox {
     pub fn new(skybox_texture_folder: &Path) -> Result<Self, String> {
-        let input = BufReader::new(File::open("assets/cube.obj").unwrap());
+        let input = BufReader::new(File::open("assets/obj/cube.obj").unwrap());
         let obj_data: Obj = load_obj(input).unwrap();
         let (vertices, vbo_settings) = load::load_obj_vertices(&obj_data);
         let number_indices_cube = obj_data.indices.len();
@@ -38,8 +38,8 @@ impl Skybox {
         let vbo_cube = buffer::Vbo::create(vertices);
         let vao = buffer::Vao::create(vbo_indices_cube, vbo_cube, &vbo_settings);
 
-        let frag_skybox = Shader::from_frag_file(Path::new("assets/skybox.frag")).unwrap();
-        let vert_skybox = Shader::from_vert_file(Path::new("assets/skybox.vert")).unwrap();
+        let frag_skybox = Shader::from_frag_file(Path::new("assets/shader/fragment/skybox.frag")).unwrap();
+        let vert_skybox = Shader::from_vert_file(Path::new("assets/shader/vertex/skybox.vert")).unwrap();
         let skybox_prog = Program::from_shaders(&[vert_skybox, frag_skybox]).unwrap();
         let texture = create_skybox_textures(skybox_texture_folder)?;
 

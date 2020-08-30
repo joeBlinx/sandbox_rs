@@ -1,10 +1,10 @@
 #version 330 core
 
 out vec4 Color;
-in vec3 normal;
 in vec3 frag_pos;
 in vec3 uv_out;
 uniform sampler2D lava_texture;
+uniform sampler2D normal_map;
 uniform vec3 pos_cam;
 
 float compute_diffuse_light(vec3 normal, vec3 light_dir){
@@ -24,10 +24,15 @@ vec3 compute_specular_light(vec3 normals, vec3 light_dir, vec3 light_color){
 }
 void main()
 {
+    // obtain normal from normal map in range [0,1]
+    vec3 normal = texture(normal_map, uv_out.xy).rgb;
+    // transform normal vector to range [-1,1]
+    normal = normalize(normal * 2.0 - 1.0);   
+
     vec3 light_color = vec3(1, 1, 1);
     float ambient = 0.2;
     vec3 norm = normalize(normal);
-    vec3 light_pos = vec3(20, 50, 0);
+    vec3 light_pos = vec3(1, 1, 1);
     vec3 light_dir = normalize(light_pos - frag_pos);
     float diffuse = compute_diffuse_light(norm, light_dir);
 
