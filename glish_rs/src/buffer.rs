@@ -53,6 +53,11 @@ impl From<Vec<f32>> for Vbo {
         }
     }
 }
+impl Default for Vbo {
+    fn default() -> Self {
+        Vbo { id: 0, target: 0 }
+    }
+}
 impl Drop for Vbo {
     fn drop(&mut self) {
         unsafe {
@@ -83,7 +88,15 @@ pub struct Vao {
     _vbos: Vec<Vbo>,
     vbo_indices: Vbo,
 }
-
+impl Default for Vao {
+    fn default() -> Self {
+        Vao {
+            id: 0,
+            _vbos: Vec::new(),
+            vbo_indices: Vbo::default(),
+        }
+    }
+}
 impl Vao {
     pub fn create(vbo_indices: Vbo, vbo: Vbo, vbo_settings: &[VboSettings]) -> Vao {
         let mut vao: gl::types::GLuint = 0;

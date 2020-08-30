@@ -77,7 +77,7 @@ impl Program {
                 if id != -1 {
                     self.unis.insert(uni_string, id);
                     uni_id = Some(id);
-                }else{
+                } else {
                     eprintln!("This name {:?} does not refer to a uniform name", &uni_gl);
                     uni_id = None;
                 }
@@ -92,18 +92,17 @@ impl Program {
     pub fn set_uni<T: Into<Vec<u8>>, U: SetUniform>(&mut self, uni_name: T, value: U) {
         self.set_used();
         let uni_id = self.get_uni(uni_name);
-        match uni_id{
+        match uni_id {
             Some(id) => value.set_uniform(id),
             _ => {}
         }
-        
     }
 }
-impl Default for Program{
-    fn default() -> Self{
-        Program{
+impl Default for Program {
+    fn default() -> Self {
+        Program {
             id: 0,
-            unis: HashMap::new()
+            unis: HashMap::new(),
         }
     }
 }

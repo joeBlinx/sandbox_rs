@@ -26,16 +26,19 @@ impl Texture {
         };
         texture.bind();
         let format;
-        if let Some(extension) = path_to_file.extension(){
+        if let Some(extension) = path_to_file.extension() {
             let extension = extension.to_str().unwrap();
             match extension {
                 "jpg" => format = gl::RGB,
                 "png" => format = gl::RGBA,
                 _ => {
-                    return Err(format!("Extension {} not handle find in path {:?}", extension, path_to_file));
+                    return Err(format!(
+                        "Extension {} not handle find in path {:?}",
+                        extension, path_to_file
+                    ));
                 }
             }
-        }else{
+        } else {
             return Err(format!("No extension find in path {:?}", path_to_file));
         }
         unsafe {
@@ -124,9 +127,13 @@ impl Drop for Texture {
     }
 }
 
-fn tex_image_2d_from_file(file_path: &Path, target: GLenum, format: GLenum) -> Result<bool, String>{
+fn tex_image_2d_from_file(
+    file_path: &Path,
+    target: GLenum,
+    format: GLenum,
+) -> Result<bool, String> {
     let sdl2_surface = Surface::from_file(file_path);
-    match sdl2_surface{
+    match sdl2_surface {
         Ok(surface) => {
             unsafe {
                 gl::TexImage2D(
@@ -142,12 +149,9 @@ fn tex_image_2d_from_file(file_path: &Path, target: GLenum, format: GLenum) -> R
                 );
             };
             Ok(true)
-        },
-        Err(err) => {
-            Err(err)
         }
+        Err(err) => Err(err),
     }
-    
 }
 
 fn create_texture_id() -> GLuint {

@@ -54,28 +54,28 @@ impl HandleEvent for Camera {
                 match keycode {
                     Keycode::Q => {
                         self.move_sphere(0., 0., phi);
-                    },
+                    }
                     Keycode::D => {
                         self.move_sphere(0., 0., -phi);
-                    },
+                    }
                     Keycode::Z => {
                         self.move_sphere(0., teta, 0.);
-                    },
+                    }
                     Keycode::S => {
                         self.move_sphere(0., -teta, 0.);
-                    },
+                    }
                     Keycode::Left => {
                         self.move_xyz(&[-delta, 0., 0.]);
-                    },
+                    }
                     Keycode::Right => {
                         self.move_xyz(&[delta, 0., 0.]);
-                    },
+                    }
                     Keycode::Up => {
                         self.move_xyz(&[0., delta, 0.]);
-                    },
+                    }
                     Keycode::Down => {
                         self.move_xyz(&[0., -delta, 0.]);
-                    },
+                    }
                     _ => {}
                 }
             }

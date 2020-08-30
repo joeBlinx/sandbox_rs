@@ -4,7 +4,7 @@ out vec4 Color;
 in vec3 normal;
 in vec3 frag_pos;
 in vec3 uv_out;
-uniform sampler2D lava_texture;
+uniform sampler2D color_map;
 uniform vec3 pos_cam;
 
 float compute_diffuse_light(vec3 normal, vec3 light_dir){
@@ -31,7 +31,7 @@ void main()
     vec3 light_dir = normalize(light_pos - frag_pos);
     float diffuse = compute_diffuse_light(norm, light_dir);
 
-    vec4 object_color = texture(lava_texture, uv_out.xy);
+    vec4 object_color = texture(color_map, uv_out.xy);
     vec3 specular = compute_specular_light(norm, light_dir, light_color);
     vec3 ambient_color = ambient*light_color;
     vec3 diffuse_color = diffuse * light_color;

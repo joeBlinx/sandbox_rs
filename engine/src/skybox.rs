@@ -38,8 +38,10 @@ impl Skybox {
         let vbo_cube = buffer::Vbo::create(vertices);
         let vao = buffer::Vao::create(vbo_indices_cube, vbo_cube, &vbo_settings);
 
-        let frag_skybox = Shader::from_frag_file(Path::new("assets/shader/fragment/skybox.frag")).unwrap();
-        let vert_skybox = Shader::from_vert_file(Path::new("assets/shader/vertex/skybox.vert")).unwrap();
+        let frag_skybox =
+            Shader::from_frag_file(Path::new("assets/shader/fragment/skybox.frag")).unwrap();
+        let vert_skybox =
+            Shader::from_vert_file(Path::new("assets/shader/vertex/skybox.vert")).unwrap();
         let skybox_prog = Program::from_shaders(&[vert_skybox, frag_skybox]).unwrap();
         let texture = create_skybox_textures(skybox_texture_folder)?;
 

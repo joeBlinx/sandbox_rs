@@ -36,14 +36,13 @@ fn shader_from_source(source: &CStr, shader_type: GLuint) -> Result<GLuint, Stri
     }
     Ok(id)
 }
-pub struct ShaderSettings<'a>{
+pub struct ShaderSettings<'a> {
     pub stage: GLenum,
-    pub path: &'a Path
-
+    pub path: &'a Path,
 }
 pub struct Shader {
     id: GLuint,
-    counter : Rc<i32>
+    counter: Rc<i32>,
 }
 
 impl Shader {
@@ -55,7 +54,10 @@ impl Shader {
     }
     pub fn from_source(source: &CStr, shader_type: GLenum) -> Result<Shader, String> {
         let id = shader_from_source(source, shader_type)?;
-        Ok(Shader { id, counter:Rc::new(1) })
+        Ok(Shader {
+            id,
+            counter: Rc::new(1),
+        })
     }
 
     pub fn id(&self) -> GLuint {
@@ -77,20 +79,20 @@ impl Shader {
     }
 }
 
-impl Clone for Shader{
+impl Clone for Shader {
     fn clone(&self) -> Self {
-        Self{
-            id : self.id,
-            counter : Rc::clone(&self.counter)
+        Self {
+            id: self.id,
+            counter: Rc::clone(&self.counter),
         }
     }
 }
 impl Drop for Shader {
     fn drop(&mut self) {
-        if Rc::strong_count(&self.counter) == 1{
+        if Rc::strong_count(&self.counter) == 1 {
             unsafe {
                 gl::DeleteShader(self.id);
-            }   
+            }
         }
     }
 }
