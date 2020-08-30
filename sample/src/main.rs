@@ -3,8 +3,10 @@ use engine::{
     camera, handle_event::HandleEvent, 
     imgui_wrap::ImguiWrap, 
     sample::sample_3d::Sample3d, skybox,
+    sample::sample_2d::plane,
     traits::Draw, window,
 };
+use glish_rs::shader::ShaderSettings;
 use imgui::im_str;
 use nalgebra_glm::make_vec3;
 use std::path::Path;
@@ -84,6 +86,17 @@ fn main() {
 
     let mut skybox = skybox::Skybox::new(Path::new("assets/skybox")).unwrap();
     //Imgui creation
+    let mut plane = plane::Plane::new_with_shaders(&[
+        ShaderSettings{
+            stage: gl::VERTEX_SHADER,
+            path: Path::new("assets/triangle.vert")
+        },
+        ShaderSettings{
+            stage: gl::FRAGMENT_SHADER,
+            path: Path::new("assets/triangle.frag")
+        }
+    ]);
+    plane.add_textures("lava_texture", Path::new("assets/lava.png"));
     let mut imgui = window.create_imgui();
     imgui.add_item(Rc::new(|ui| {
         ui.text(im_str!("Hello world!"));
@@ -114,7 +127,8 @@ fn main() {
             }
         }
 
-        sample_3d.draw(&cam);
+        //sample_3d.draw(&cam);
+        plane.draw(&cam);
         skybox.draw(&cam);
         if display_gui {
             imgui.render(&event_pump.mouse_state());

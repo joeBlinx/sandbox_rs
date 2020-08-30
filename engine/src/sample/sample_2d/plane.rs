@@ -30,21 +30,21 @@ impl Default for Plane{
           1., -1., 1., 1. //4
         ];
         let indices = [
-            0, 2, 3,
-            0, 2, 1
+            0, 1, 2,
+            0, 1, 3
         ];
         let vbo_indices = buffer::Vbo::create_elements(indices.to_vec());
         let vbo_settings = [
             VboSettings{
                 location: 0,
                 size: 2,
-                stride: 0,
-                offset: 2
+                stride: 4,
+                offset: 0
             },
             VboSettings{
-                location: 1,
+                location: 2,
                 size: 2,
-                stride: 2,
+                stride: 4,
                 offset: 2
             }
         ];
