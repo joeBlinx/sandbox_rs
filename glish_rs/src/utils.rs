@@ -19,3 +19,4 @@ pub fn draw_elements(number_indices: usize) {
         );
     };
 }
+

@@ -6,7 +6,7 @@ use std::fs::read_to_string;
 use std::path::Path;
 use std::rc::Rc;
 
-pub fn shader_from_source(source: &CStr, shader_type: GLuint) -> Result<GLuint, String> {
+fn shader_from_source(source: &CStr, shader_type: GLuint) -> Result<GLuint, String> {
     let id = unsafe { gl::CreateShader(shader_type) };
     unsafe {
         gl::ShaderSource(id, 1, &source.as_ptr(), std::ptr::null());
@@ -36,7 +36,11 @@ pub fn shader_from_source(source: &CStr, shader_type: GLuint) -> Result<GLuint, 
     }
     Ok(id)
 }
+pub struct ShaderSettings<'a>{
+    pub stage: GLenum,
+    pub path: &'a Path
 
+}
 pub struct Shader {
     id: GLuint,
     counter : Rc<i32>
