@@ -1,6 +1,8 @@
 #![feature(get_mut_unchecked)]
 use engine::{
-    camera, handle_event::HandleEvent, imgui_wrap::ImguiWrap, sample_3d::Sample3d, skybox,
+    camera, handle_event::HandleEvent, 
+    imgui_wrap::ImguiWrap, 
+    sample::sample_3d::Sample3d, skybox,
     traits::Draw, window,
 };
 use imgui::im_str;
@@ -80,7 +82,7 @@ fn main() {
     let mut event_pump = sdl.event_pump().unwrap();
     let mut cam = camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]));
 
-    let mut skybox = skybox::Skybox::new(Path::new("assets/skybox"));
+    let mut skybox = skybox::Skybox::new(Path::new("assets/skybox")).unwrap();
     //Imgui creation
     let mut imgui = window.create_imgui();
     imgui.add_item(Rc::new(|ui| {
@@ -92,7 +94,7 @@ fn main() {
     let mut display_gui = false;
     let mut debug_gui = DebugGui::default();
     debug_gui.create_gui(&mut imgui);
-    let mut sample_3d = Sample3d::new(debug_gui.get_obj_path(), Path::new("assets/lava.png"));
+    let mut sample_3d = Sample3d::new(debug_gui.get_obj_path(), Path::new("assets/lava.png")).unwrap();
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
@@ -118,7 +120,7 @@ fn main() {
             imgui.render(&event_pump.mouse_state());
         }
         match debug_gui.get_obj_path_if_change() {
-            Some(path) => sample_3d = Sample3d::new(path, Path::new("assets/lava.png")),
+            Some(path) => sample_3d = Sample3d::new(path, Path::new("assets/lava.png")).unwrap(),
             _ => {}
         }
         let ten_millis = std::time::Duration::from_millis(17);

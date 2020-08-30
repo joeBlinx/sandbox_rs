@@ -65,20 +65,25 @@ impl Program {
             gl::UseProgram(self.id);
         }
     }
-    fn get_uni<T: Into<Vec<u8>>>(&mut self, uni_name: T) -> GLint {
+    fn get_uni<T: Into<Vec<u8>>>(&mut self, uni_name: T) -> Option<GLint> {
         let uni_gl = CString::new(uni_name).unwrap();
         let uni_string = uni_gl.to_string_lossy().into_owned();
         let uni = self.unis.get(&uni_string);
-        let uni_id: GLint;
+        let uni_id: Option<GLint>;
         match uni {
             None => {
                 let id = unsafe { gl::GetUniformLocation(self.id, uni_gl.as_ptr()) };
                 let _error = unsafe { gl::GetError() };
-                self.unis.insert(uni_string, id);
-                uni_id = id;
+                if id != -1 {
+                    self.unis.insert(uni_string, id);
+                    uni_id = Some(id);
+                }else{
+                    eprintln!("This name {:?} does not refer to a uniform name", &uni_gl);
+                    uni_id = None;
+                }
             }
             Some(value) => {
-                uni_id = *value;
+                uni_id = Some(*value);
             }
         }
         return uni_id;
@@ -87,10 +92,21 @@ impl Program {
     pub fn set_uni<T: Into<Vec<u8>>, U: SetUniform>(&mut self, uni_name: T, value: U) {
         self.set_used();
         let uni_id = self.get_uni(uni_name);
-        value.set_uniform(uni_id);
+        match uni_id{
+            Some(id) => value.set_uniform(id),
+            _ => {}
+        }
+        
     }
 }
-
+impl Default for Program{
+    fn default() -> Self{
+        Program{
+            id: 0,
+            unis: HashMap::new()
+        }
+    }
+}
 impl Drop for Program {
     fn drop(&mut self) {
         unsafe {

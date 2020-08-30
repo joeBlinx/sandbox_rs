@@ -17,7 +17,7 @@ pub struct Skybox {
     number_indices: usize,
 }
 
-fn create_skybox_textures(skybox_texture_folder: &Path) -> Texture {
+fn create_skybox_textures(skybox_texture_folder: &Path) -> Result<Texture, String> {
     let path_3d_textures = PathCubeMaps {
         x: skybox_texture_folder.join("right.jpg"),
         x_neg: skybox_texture_folder.join("left.jpg"),
@@ -29,7 +29,7 @@ fn create_skybox_textures(skybox_texture_folder: &Path) -> Texture {
     Texture::texture_3d_from_files(path_3d_textures)
 }
 impl Skybox {
-    pub fn new(skybox_texture_folder: &Path) -> Self {
+    pub fn new(skybox_texture_folder: &Path) -> Result<Self, String> {
         let input = BufReader::new(File::open("assets/cube.obj").unwrap());
         let obj_data: Obj = load_obj(input).unwrap();
         let (vertices, vbo_settings) = load::load_obj_vertices(&obj_data);
@@ -41,14 +41,14 @@ impl Skybox {
         let frag_skybox = Shader::from_frag_file(Path::new("assets/skybox.frag")).unwrap();
         let vert_skybox = Shader::from_vert_file(Path::new("assets/skybox.vert")).unwrap();
         let skybox_prog = Program::from_shaders(&[vert_skybox, frag_skybox]).unwrap();
-        let texture = create_skybox_textures(skybox_texture_folder);
+        let texture = create_skybox_textures(skybox_texture_folder)?;
 
-        Skybox {
+        Ok(Skybox {
             vao,
             opengl_prog: skybox_prog,
             texture,
             number_indices: number_indices_cube,
-        }
+        })
     }
 }
 impl Draw for Skybox {

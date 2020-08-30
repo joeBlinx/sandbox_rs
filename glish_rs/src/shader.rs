@@ -4,6 +4,7 @@ use gl::types::{GLenum, GLint, GLuint};
 use std::ffi::{CStr, CString};
 use std::fs::read_to_string;
 use std::path::Path;
+use std::rc::Rc;
 
 pub fn shader_from_source(source: &CStr, shader_type: GLuint) -> Result<GLuint, String> {
     let id = unsafe { gl::CreateShader(shader_type) };
@@ -38,6 +39,7 @@ pub fn shader_from_source(source: &CStr, shader_type: GLuint) -> Result<GLuint, 
 
 pub struct Shader {
     id: GLuint,
+    counter : Rc<i32>
 }
 
 impl Shader {
@@ -49,7 +51,7 @@ impl Shader {
     }
     pub fn from_source(source: &CStr, shader_type: GLenum) -> Result<Shader, String> {
         let id = shader_from_source(source, shader_type)?;
-        Ok(Shader { id })
+        Ok(Shader { id, counter:Rc::new(1) })
     }
 
     pub fn id(&self) -> GLuint {
@@ -71,10 +73,20 @@ impl Shader {
     }
 }
 
+impl Clone for Shader{
+    fn clone(&self) -> Self {
+        Self{
+            id : self.id,
+            counter : Rc::clone(&self.counter)
+        }
+    }
+}
 impl Drop for Shader {
     fn drop(&mut self) {
-        unsafe {
-            gl::DeleteShader(self.id);
+        if Rc::strong_count(&self.counter) == 1{
+            unsafe {
+                gl::DeleteShader(self.id);
+            }   
         }
     }
 }
