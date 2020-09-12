@@ -1,4 +1,3 @@
-#![feature(get_mut_unchecked)]
 use engine::{
     camera, handle_event::HandleEvent, sample::sample_3d::Sample3d, skybox,
     traits::Draw, window,

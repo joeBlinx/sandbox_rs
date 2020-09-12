@@ -2,19 +2,23 @@ use std::rc::Rc;
 use std::path::Path;
 use imgui::im_str;
 use engine::imgui_wrap::ImguiWrap;
+use std::cell::RefCell;
+use std::ops::{DerefMut, Deref};
+use std::borrow::BorrowMut;
+
 pub struct DebugGui {
     obj_arrays: Vec<imgui::ImString>,
-    choose: Rc<i32>,
+    choose: Rc<RefCell<i32>>,
     old_one: i32,
-    normal_map: Rc<bool>,
+    normal_map: Rc<RefCell<bool>>,
 }
 impl Default for DebugGui {
     fn default() -> Self {
         DebugGui {
             obj_arrays: get_all_obj(),
-            choose: Rc::new(0),
+            choose: Rc::new(RefCell::new(0)),
             old_one: 0,
-            normal_map: Rc::new(false),
+            normal_map: Rc::new(RefCell::new(false)),
         }
     }
 }
@@ -29,25 +33,24 @@ impl DebugGui {
                 for it in copy.iter() {
                     obj_ref_arrays.push(it);
                 }
-                unsafe {
-                    ui.list_box(
-                        im_str!("Hello"),
-                        Rc::get_mut_unchecked(&mut copy_choose),
-                        &obj_ref_arrays,
-                        obj_ref_arrays.len() as i32,
-                    );
-                    ui.checkbox(
-                        im_str!("Use normal_map"),
-                        Rc::get_mut_unchecked(&mut copy_normal_map),
-                    )
-                }
+                ui.list_box(
+                    im_str!("Hello"),
+                    copy_choose.deref().borrow_mut().deref_mut(),
+                    &obj_ref_arrays,
+                    obj_ref_arrays.len() as i32,
+                );
+                ui.checkbox(
+                    im_str!("Use normal_map"),
+                    copy_normal_map.deref().borrow_mut().deref_mut(),
+                )
+
             };
         }));
     }
     pub fn get_obj_path_if_change(&mut self) -> Option<&Path> {
-        if *self.choose != self.old_one {
-            self.old_one = *self.choose;
-            Some(&Path::new(self.obj_arrays[*self.choose as usize].to_str()))
+        if *self.choose.borrow() != self.old_one {
+            self.old_one = *self.choose.borrow();
+            Some(&Path::new(self.obj_arrays[*self.choose.borrow() as usize].to_str()))
         } else {
             None
         }
@@ -56,7 +59,7 @@ impl DebugGui {
         &Path::new(self.obj_arrays[self.old_one as usize].to_str())
     }
     pub fn use_normal_map(&self) -> bool {
-        *self.normal_map
+        *self.normal_map.borrow()
     }
 }
 fn get_all_obj<'a>() -> Vec<imgui::ImString> {
