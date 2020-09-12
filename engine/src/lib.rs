@@ -6,3 +6,4 @@ pub mod sample;
 pub mod skybox;
 pub mod traits;
 pub mod window;
+pub mod world;

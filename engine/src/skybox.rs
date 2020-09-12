@@ -54,7 +54,7 @@ impl Skybox {
     }
 }
 impl Draw for Skybox {
-    fn draw(&mut self, cam: &Camera) {
+    fn draw(&self, cam: &Camera) {
         unsafe {
             gl::DepthFunc(gl::LEQUAL);
         }

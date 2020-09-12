@@ -116,7 +116,7 @@ impl Sample3d {
 }
 
 impl Draw for Sample3d {
-    fn draw(&mut self, cam: &Camera) {
+    fn draw(&self, cam: &Camera) {
         self.vao.bind();
         self.opengl_prog.set_used();
         self.opengl_prog.set_uni("pos_cam", cam.get_position());

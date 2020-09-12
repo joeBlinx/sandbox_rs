@@ -4,10 +4,10 @@ use crate::utils;
 use gl;
 use gl::types::{GLint, GLuint};
 use std::collections::HashMap;
-use std::ffi::CString;
+use std::{cell::RefCell, ffi::CString};
 pub struct Program {
     id: GLuint,
-    unis: HashMap<String, GLint>,
+    unis: RefCell<HashMap<String, GLint>>,
 }
 
 impl Program {
@@ -57,7 +57,7 @@ impl Program {
 
         Ok(Program {
             id: program_id,
-            unis: HashMap::new(),
+            unis: RefCell::new(HashMap::new()),
         })
     }
     pub fn set_used(&self) {
@@ -65,17 +65,17 @@ impl Program {
             gl::UseProgram(self.id);
         }
     }
-    fn get_uni<T: Into<Vec<u8>>>(&mut self, uni_name: T) -> Option<GLint> {
+    fn get_uni<T: Into<Vec<u8>>>(&self, uni_name: T) -> Option<GLint> {
         let uni_gl = CString::new(uni_name).unwrap();
         let uni_string = uni_gl.to_string_lossy().into_owned();
-        let uni = self.unis.get(&uni_string);
         let uni_id: Option<GLint>;
+        let uni = self.unis.borrow().get(&uni_string).cloned();
         match uni {
             None => {
                 let id = unsafe { gl::GetUniformLocation(self.id, uni_gl.as_ptr()) };
                 let _error = unsafe { gl::GetError() };
                 if id != -1 {
-                    self.unis.insert(uni_string, id);
+                    self.unis.borrow_mut().insert(uni_string, id);
                     uni_id = Some(id);
                 } else {
                     eprintln!("This name {:?} does not refer to a uniform name", &uni_gl);
@@ -83,13 +83,13 @@ impl Program {
                 }
             }
             Some(value) => {
-                uni_id = Some(*value);
+                uni_id = Some(value);
             }
         }
         return uni_id;
     }
 
-    pub fn set_uni<T: Into<Vec<u8>>, U: SetUniform>(&mut self, uni_name: T, value: U) {
+    pub fn set_uni<T: Into<Vec<u8>>, U: SetUniform>(&self, uni_name: T, value: U) {
         self.set_used();
         let uni_id = self.get_uni(uni_name);
         match uni_id {
@@ -102,7 +102,7 @@ impl Default for Program {
     fn default() -> Self {
         Program {
             id: 0,
-            unis: HashMap::new(),
+            unis: RefCell::new(HashMap::new()),
         }
     }
 }
