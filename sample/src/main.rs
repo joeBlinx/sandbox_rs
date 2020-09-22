@@ -12,6 +12,7 @@ extern crate sdl2;
 mod debug_gui;
 use debug_gui::DebugGui;
 use engine::world;
+use std::cell::RefCell;
 
 fn main() {
     let window = window::Window::new((3, 3));
@@ -21,7 +22,7 @@ fn main() {
     let mut world = world::World::default();
     let skybox = skybox::Skybox::new(Path::new("assets/skybox")).unwrap();
     //Imgui creation
-    let mut plane = Box::new({
+    let plane = Rc::new(RefCell::new({
         let mut plane = Sample3d::create_plane();
         plane.add_shader(
             gl::VERTEX_SHADER,
@@ -40,8 +41,8 @@ fn main() {
             Path::new("assets/normal_mapping/brickwall_normal.jpg"),
         );
         plane
-    });
-    world.add_drawable(plane);
+    }));
+    let plane = world.register_drawable(plane);
     let mut imgui = window.create_imgui();
     imgui.add_item(Rc::new(|ui| {
         ui.text(im_str!("Hello world!"));
@@ -52,21 +53,25 @@ fn main() {
     let mut display_gui = false;
     let mut debug_gui = DebugGui::default();
     debug_gui.create_gui(&mut imgui);
-    let mut sample_3d = Sample3d::from_obj_file(debug_gui.get_obj_path()).unwrap();
-    sample_3d.add_texture("color_map", Path::new("assets/lava.png"));
-    sample_3d.add_shader(
-        gl::VERTEX_SHADER,
-        &Path::new("assets/shader/vertex/triangle.vert"),
-    );
-    sample_3d.add_shader(
-        gl::FRAGMENT_SHADER,
-        &Path::new("assets/shader/fragment/triangle.frag"),
-    );
+    let sample3d = world.register_drawable(Rc::new(RefCell::new({
+        let mut sample_3d = Sample3d::from_obj_file(debug_gui.get_obj_path()).unwrap();
+        sample_3d.add_texture("color_map", Path::new("assets/lava.png"));
+        sample_3d.add_shader(
+            gl::VERTEX_SHADER,
+            &Path::new("assets/shader/vertex/triangle.vert"),
+        );
+        sample_3d.add_shader(
+            gl::FRAGMENT_SHADER,
+            &Path::new("assets/shader/fragment/triangle.frag"),
+        );
+            sample_3d
+        })));
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
             cam.handle_event(&event);
             imgui.handle_event(&event);
+            world.handle_event(&event);
             match event {
                 sdl2::event::Event::Quit { .. } => break 'main,
                 sdl2::event::Event::KeyDown { keycode, .. } => {
@@ -81,7 +86,6 @@ fn main() {
             }
         }
 
-        sample_3d.draw(&cam);
         world.do_the_thing();
         skybox.draw(&cam);
         if display_gui {
@@ -89,21 +93,36 @@ fn main() {
         }
         match debug_gui.get_obj_path_if_change() {
             Some(path) => {
-                let _ = sample_3d.add_obj_file(path);
+                match sample3d.upgrade(){
+                    Some(sample_3d) => {let _ = (*sample_3d).borrow_mut().add_obj_file(path);},
+                    _ => {}
+                }
             }
             _ => {}
         }
-        // if debug_gui.use_normal_map() {
-        //     plane.add_shader(
-        //         gl::FRAGMENT_SHADER,
-        //         &Path::new("assets/shader/fragment/normal_mapping.frag"),
-        //     );
-        // } else {
-        //     plane.add_shader(
-        //         gl::FRAGMENT_SHADER,
-        //         &Path::new("assets/shader/fragment/triangle.frag"),
-        //     );
-        // }
+        if debug_gui.use_normal_map() {
+            match plane.upgrade() {
+                Some(plane) =>
+                    {
+                        (*plane).borrow_mut().add_shader(
+                            gl::FRAGMENT_SHADER,
+                            &Path::new("assets/shader/fragment/normal_mapping.frag"),
+                        );
+                    },
+                _ =>{}
+            }
+        } else {
+            match plane.upgrade() {
+                Some(plane) =>
+                    {
+                        (*plane).borrow_mut().add_shader(
+                            gl::FRAGMENT_SHADER,
+                            &Path::new("assets/shader/fragment/triangle.frag"),
+                        );
+                    },
+                _ =>{}
+            }
+        }
         let ten_millis = std::time::Duration::from_millis(17);
         std::thread::sleep(ten_millis);
         window.refresh();

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated />
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="CargoProjects">
+    <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ba147ec5-ee44-4cc4-a53f-9f1fab1362e2" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/engine/src/world.rs" beforeDir="false" afterPath="$PROJECT_DIR$/engine/src/world.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sample/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/sample/src/main.rs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="GLSL Shader" />
+        <option value="Rust File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="vsjq41k6" />
+  </component>
+  <component name="ProjectId" id="1hQ34LHpJ7OjJYZVNq9CGvvwaqg" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Rust" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Cargo.toml" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunManager" selected="Cargo.Sample run">
+    <configuration name="Dod" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="run --bin dod" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Sample run" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="run --bin sample" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="check" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="check" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="fix" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="fix --am" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Cargo.Dod" />
+      <item itemvalue="Cargo.Sample run" />
+      <item itemvalue="Cargo.check" />
+      <item itemvalue="Cargo.fix" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Cargo.fix" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="RustProjectSettings">
+    <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
+    <option name="version" value="2" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ba147ec5-ee44-4cc4-a53f-9f1fab1362e2" name="Default Changelist" comment="" />
+      <created>1599929295763</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1599929295763</updated>
+      <workItem from="1599929297672" duration="207000" />
+      <workItem from="1599938893639" duration="2358000" />
+      <workItem from="1600355789272" duration="145000" />
+      <workItem from="1600355945976" duration="2997000" />
+      <workItem from="1600443987062" duration="1990000" />
+      <workItem from="1600525345540" duration="1145000" />
+      <workItem from="1600526498854" duration="9531000" />
+      <workItem from="1600611090179" duration="3891000" />
+      <workItem from="1600800586740" duration="306000" />
+      <workItem from="1600800904941" duration="2265000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="589" y="220" width="732" height="631" key="#Inspections" timestamp="1600529856683">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="589" y="220" width="732" height="631" key="#Inspections/0.0.1920.1080@0.0.1920.1080" timestamp="1600529856683" />
+    <state x="418" y="184" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1600444728747">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="418" y="177" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599929504203" />
+    <state x="418" y="184" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1600444728747" />
+    <state x="768" y="258" width="374" height="556" key="#com.intellij.ide.util.MemberChooser" timestamp="1600614542374">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="768" y="258" width="374" height="556" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1080@0.0.1920.1080" timestamp="1600614542374" />
+    <state x="743" y="277" width="424" height="478" key="FileChooserDialogImpl" timestamp="1599929316535">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="743" y="277" width="424" height="478" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1599929316535" />
+    <state width="1878" height="123" key="GridCell.Tab.0.bottom" timestamp="1600803169264">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599941251710" />
+    <state width="1878" height="123" key="GridCell.Tab.0.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1600803169264" />
+    <state width="1878" height="123" key="GridCell.Tab.0.center" timestamp="1600803169263">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599941251710" />
+    <state width="1878" height="123" key="GridCell.Tab.0.center/0.0.1920.1080@0.0.1920.1080" timestamp="1600803169263" />
+    <state width="1878" height="123" key="GridCell.Tab.0.left" timestamp="1600803169261">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599941251710" />
+    <state width="1878" height="123" key="GridCell.Tab.0.left/0.0.1920.1080@0.0.1920.1080" timestamp="1600803169261" />
+    <state width="1878" height="123" key="GridCell.Tab.0.right" timestamp="1600803169263">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="344" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599941251710" />
+    <state width="1878" height="123" key="GridCell.Tab.0.right/0.0.1920.1080@0.0.1920.1080" timestamp="1600803169263" />
+    <state width="1878" height="245" key="GridCell.Tab.1.bottom" timestamp="1600535644782">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="245" key="GridCell.Tab.1.bottom/0.0.1920.1080@0.0.1920.1080" timestamp="1600535644782" />
+    <state width="1878" height="245" key="GridCell.Tab.1.center" timestamp="1600535644782">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="245" key="GridCell.Tab.1.center/0.0.1920.1080@0.0.1920.1080" timestamp="1600535644782" />
+    <state width="1878" height="245" key="GridCell.Tab.1.left" timestamp="1600535644782">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="245" key="GridCell.Tab.1.left/0.0.1920.1080@0.0.1920.1080" timestamp="1600535644782" />
+    <state width="1878" height="245" key="GridCell.Tab.1.right" timestamp="1600535644782">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="245" key="GridCell.Tab.1.right/0.0.1920.1080@0.0.1920.1080" timestamp="1600535644782" />
+    <state x="182" y="89" width="1536" height="888" key="MergeDialog" timestamp="1600356671009">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="182" y="89" width="1536" height="888" key="MergeDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1600356671009" />
+    <state x="597" y="303" width="715" height="465" key="MultipleFileMergeDialog" timestamp="1600356671017">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="597" y="303" width="715" height="465" key="MultipleFileMergeDialog/0.0.1920.1080@0.0.1920.1080" timestamp="1600356671017" />
+    <state x="464" y="174" key="SettingsEditor" timestamp="1600526488976">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="464" y="174" key="SettingsEditor/0.0.1920.1080@0.0.1920.1080" timestamp="1600526488976" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/sample/src/dod/main.rs</url>
+          <line>71</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

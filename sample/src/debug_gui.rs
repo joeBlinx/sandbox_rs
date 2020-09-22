@@ -4,7 +4,6 @@ use imgui::im_str;
 use engine::imgui_wrap::ImguiWrap;
 use std::cell::RefCell;
 use std::ops::{DerefMut, Deref};
-use std::borrow::BorrowMut;
 
 pub struct DebugGui {
     obj_arrays: Vec<imgui::ImString>,
@@ -25,8 +24,8 @@ impl Default for DebugGui {
 impl DebugGui {
     pub fn create_gui(&self, imgui: &mut ImguiWrap) {
         let copy = self.obj_arrays.clone();
-        let mut copy_choose = Rc::clone(&self.choose);
-        let mut copy_normal_map = Rc::clone(&self.normal_map);
+        let copy_choose = Rc::clone(&self.choose);
+        let copy_normal_map = Rc::clone(&self.normal_map);
         imgui.add_item(Rc::new(move |ui: &imgui::Ui| {
             {
                 let mut obj_ref_arrays = Vec::new();
