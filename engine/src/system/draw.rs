@@ -1,12 +1,12 @@
-use crate::sample::sample_3d::RenderInfo;
+use crate::sample::sample_3d::EntityRenderInfo;
 use glish_rs::utils;
-use crate::world_manager::WorldManager;
+use crate::render_manager::RenderInfo;
 use legion::{system};
 use crate::camera::Camera;
 use legion::component;
 use crate::mesh::SkyBox;
 
-fn draw(render_information: &RenderInfo, world_manager: &WorldManager){
+fn draw(render_information: &EntityRenderInfo, world_manager: &RenderInfo){
     let mesh = world_manager.meshs.get(&render_information.mesh).unwrap();
     mesh.vao.bind();
     let opengl_prog = world_manager.programs.get(&render_information.program).unwrap();
@@ -25,15 +25,15 @@ fn draw(render_information: &RenderInfo, world_manager: &WorldManager){
 
 #[system(for_each)]
 #[filter(!component::<SkyBox>())]
-pub fn draw_entity(render_information:&RenderInfo,
-        #[resource] world_manager: &WorldManager
+pub fn draw_entity(render_information:&EntityRenderInfo,
+                   #[resource] world_manager: &RenderInfo
                ){
    draw(render_information, world_manager);
 }
 
 #[system(for_each)]
-pub fn draw_skybox(render_information:&RenderInfo, _: &SkyBox,
-                   #[resource] world_manager: &WorldManager
+pub fn draw_skybox(render_information:&EntityRenderInfo, _: &SkyBox,
+                   #[resource] world_manager: &RenderInfo
 ){
     unsafe {
         gl::DepthFunc(gl::LEQUAL);
@@ -45,7 +45,7 @@ pub fn draw_skybox(render_information:&RenderInfo, _: &SkyBox,
 }
 #[system(for_each)]
 pub fn update_camera(cam: &Camera,
-                 #[resource] world_manager: &WorldManager
+                 #[resource] world_manager: &RenderInfo
 
 ){
     for (_, program) in world_manager.programs.iter(){

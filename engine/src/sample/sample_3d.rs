@@ -14,7 +14,7 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
-pub struct RenderInfo{
+pub struct EntityRenderInfo {
     pub mesh: String,
     pub program: String,
     pub textures: HashMap<String, String>,
