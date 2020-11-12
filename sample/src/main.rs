@@ -10,18 +10,18 @@ extern crate rand;
 extern crate sdl2;
 mod debug_gui;
 use debug_gui::DebugGui;
-use engine::render_manager;
+use engine::world_manager;
 
 use engine::mesh::{Mesh, SkyBox};
-use engine::render_manager::RenderInfo;
+use engine::world_manager::WorldManager;
 use glish_rs::shader::Shader;
-use engine::sample::sample_3d::EntityRenderInfo;
+use engine::sample::sample_3d::RenderInfo;
 use std::collections::HashMap;
 use engine::legion;
 use engine::legion::{Schedule, Resources};
 use engine::system::draw::*;
 
-fn create_mesh(world: &mut RenderInfo){
+fn create_mesh(world: &mut WorldManager){
     let cube = Mesh::from_obj_file(Path::new("assets/obj/cube.obj")).unwrap();
     let sphere = Mesh::from_obj_file(Path::new("assets/obj/sphere.obj")).unwrap();
     let susan = Mesh::from_obj_file(Path::new("assets/obj/susan.obj")).unwrap();
@@ -32,13 +32,13 @@ fn create_mesh(world: &mut RenderInfo){
     world.add_mesh("plane", Mesh::create_plane());
 }
 
-fn create_textures(world: &mut RenderInfo){
+fn create_textures(world: &mut WorldManager){
     world.add_textures("lava", Path::new("assets/lava.png"));
     world.add_textures("brick", Path::new("assets/normal_mapping/brickwall.jpg"));
     world.add_textures("brick_normal", Path::new("assets/normal_mapping/brickwall_normal.jpg"));
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
-fn create_program(world: &mut RenderInfo){
+fn create_program(world: &mut WorldManager){
     let shaders_classic=[
         Shader::from_vert_file(Path::new("assets/shader/vertex/triangle.vert")).unwrap(),
         Shader::from_frag_file(Path::new("assets/shader/fragment/triangle.frag")).unwrap()
@@ -62,13 +62,13 @@ fn main() {
     let sdl = window.sdl();
     let mut event_pump = sdl.event_pump().unwrap();
     let mut cam = camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]));
-    let mut world = render_manager::RenderInfo::default();
+    let mut world = world_manager::WorldManager::default();
 
     create_mesh(&mut world);
     create_textures(&mut world);
     create_program(&mut world);
 
-    let _main_object = EntityRenderInfo {
+    let _main_object = RenderInfo {
         mesh: String::from("cube"),
         program: String::from("classic"),
         textures:{
@@ -77,7 +77,7 @@ fn main() {
             textures
         }
     };
-    let plane = EntityRenderInfo {
+    let plane = RenderInfo{
         mesh: String::from("plane"),
         program: String::from("normal_map"),
         textures:{
@@ -88,7 +88,7 @@ fn main() {
         }
     };
 
-    let skybox = EntityRenderInfo {
+    let skybox = RenderInfo{
         mesh: String::from("cube"),
         program: String::from("skybox"),
         textures:{

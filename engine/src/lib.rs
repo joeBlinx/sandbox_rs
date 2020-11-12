@@ -6,7 +6,7 @@ pub mod sample;
 //pub mod skybox;
 pub mod traits;
 pub mod window;
-pub mod render_manager;
+pub mod world_manager;
 pub mod mesh;
 pub mod system;
 pub use legion;
