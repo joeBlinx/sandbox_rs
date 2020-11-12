@@ -4,10 +4,12 @@ use crate::utils;
 use gl;
 use gl::types::{GLint, GLuint};
 use std::collections::HashMap;
-use std::{cell::RefCell, ffi::CString};
+use std::ffi::CString;
+use std::sync::RwLock;
+
 pub struct Program {
     id: GLuint,
-    unis: RefCell<HashMap<String, GLint>>,
+    unis: RwLock<HashMap<String, GLint>>,
 }
 
 impl Program {
@@ -57,7 +59,7 @@ impl Program {
 
         Ok(Program {
             id: program_id,
-            unis: RefCell::new(HashMap::new()),
+            unis: RwLock::new(HashMap::new()),
         })
     }
     pub fn set_used(&self) {
@@ -69,13 +71,13 @@ impl Program {
         let uni_gl = CString::new(uni_name).unwrap();
         let uni_string = uni_gl.to_string_lossy().into_owned();
         let uni_id: Option<GLint>;
-        let uni = self.unis.borrow().get(&uni_string).cloned();
+        let uni = self.unis.read().unwrap().get(&uni_string).cloned();
         match uni {
             None => {
                 let id = unsafe { gl::GetUniformLocation(self.id, uni_gl.as_ptr()) };
                 let _error = unsafe { gl::GetError() };
                 if id != -1 {
-                    self.unis.borrow_mut().insert(uni_string, id);
+                    self.unis.write().unwrap().insert(uni_string, id);
                     uni_id = Some(id);
                 } else {
                     eprintln!("This name {:?} does not refer to a uniform name", &uni_gl);
@@ -102,7 +104,7 @@ impl Default for Program {
     fn default() -> Self {
         Program {
             id: 0,
-            unis: RefCell::new(HashMap::new()),
+            unis: RwLock::new(HashMap::new()),
         }
     }
 }

@@ -49,7 +49,7 @@ impl From<Vec<f32>> for Vbo {
         }
         Vbo {
             id: vbo,
-            target: gl::ELEMENT_ARRAY_BUFFER,
+            target: gl::ARRAY_BUFFER,
         }
     }
 }
@@ -105,7 +105,7 @@ impl Vao {
         }
         unsafe {
             gl::BindVertexArray(vao);
-            gl::BindBuffer(gl::ARRAY_BUFFER, vbo.id());
+            gl::BindBuffer(vbo.target, vbo.id());
             for vbo_setting in vbo_settings {
                 gl::EnableVertexAttribArray(vbo_setting.location); // this is "layout (location = 0)" in vertex shader
                 gl::VertexAttribPointer(

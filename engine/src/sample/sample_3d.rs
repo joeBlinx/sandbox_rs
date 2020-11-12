@@ -14,12 +14,17 @@ use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
 
+pub struct RenderInfo{
+    pub mesh: String,
+    pub program: String,
+    pub textures: HashMap<String, String>,
+}
 pub struct Sample3d {
-    vao: Vao,
-    opengl_prog: Program,
-    textures: HashMap<String, Texture>,
-    shaders: HashMap<GLenum, Shader>,
-    number_indices: usize,
+    pub(crate) vao: Vao,
+    pub(crate)opengl_prog: Program,
+    pub(crate) textures: HashMap<String, Texture>,
+    pub(crate) shaders: HashMap<GLenum, Shader>,
+    pub(crate) number_indices: usize,
 }
 
 impl Sample3d {
