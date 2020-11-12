@@ -21,62 +21,18 @@ use engine::legion::{Schedule, Resources};
 use engine::system::draw::*;
 use engine::component::entity_render_info::EntityRenderInfo;
 
-fn create_mesh(world: &mut RenderInfo){
-    let cube = Mesh::from_obj_file(Path::new("assets/obj/cube.obj")).unwrap();
-    let sphere = Mesh::from_obj_file(Path::new("assets/obj/sphere.obj")).unwrap();
-    let susan = Mesh::from_obj_file(Path::new("assets/obj/susan.obj")).unwrap();
-
-    world.add_mesh("cube", cube);
-    world.add_mesh("sphere", sphere);
-    world.add_mesh("susan", susan);
-    world.add_mesh("plane", Mesh::create_plane());
-}
-
 fn create_textures(world: &mut RenderInfo){
     world.add_textures("lava", Path::new("assets/lava.png"));
     world.add_textures("brick", Path::new("assets/normal_mapping/brickwall.jpg"));
     world.add_textures("brick_normal", Path::new("assets/normal_mapping/brickwall_normal.jpg"));
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
-fn create_program(world: &mut RenderInfo){
-    let shaders_classic=[
-        Shader::from_vert_file(Path::new("assets/shader/vertex/triangle.vert")).unwrap(),
-        Shader::from_frag_file(Path::new("assets/shader/fragment/triangle.frag")).unwrap()
-    ];
-    let shaders_with_normal=[
-        Shader::from_vert_file(Path::new("assets/shader/vertex/triangle.vert")).unwrap(),
-        Shader::from_frag_file(Path::new("assets/shader/fragment/normal_mapping.frag")).unwrap()
-    ];
 
-    let skybox_shaders = [
-        Shader::from_vert_file(Path::new("assets/shader/vertex/skybox.vert")).unwrap(),
-        Shader::from_frag_file(Path::new("assets/shader/fragment/skybox.frag")).unwrap()
-    ];
-
-    world.add_program_from_shaders("classic", &shaders_classic);
-    world.add_program_from_shaders("normal_map", &shaders_with_normal);
-    world.add_program_from_shaders("skybox", &skybox_shaders);
-}
 fn main() {
     let window = window::Window::new((4, 5));
     let sdl = window.sdl();
     let mut event_pump = sdl.event_pump().unwrap();
-    let mut cam = camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]));
-    let mut world = render_info::RenderInfo::default();
 
-    create_mesh(&mut world);
-    create_textures(&mut world);
-    create_program(&mut world);
-
-    let _main_object = EntityRenderInfo {
-        mesh: String::from("cube"),
-        program: String::from("classic"),
-        textures:{
-            let mut textures= HashMap::new();
-            textures.insert("color_map".to_owned(), "lava".to_owned());
-            textures
-        }
-    };
     let plane = EntityRenderInfo{
         mesh: String::from("plane"),
         program: String::from("normal_map"),
@@ -88,26 +44,6 @@ fn main() {
         }
     };
 
-    let skybox = EntityRenderInfo{
-        mesh: String::from("cube"),
-        program: String::from("skybox"),
-        textures:{
-            let mut textures = HashMap::new();
-            textures.insert(String::from("cubemap"), String::from("sky"));
-            textures
-        }
-    };
-    let mut world_legion = legion::World::default();
-    let mut schedule = Schedule::builder()
-    .add_system(draw_skybox_system())
-    .flush()
-    .add_system(draw_entity_system())
-    .add_system(update_camera_system())
-    .build();
-
-    let mut resources = Resources::default();
-    resources.insert(world);
-    //Imgui creation
 
     let mut imgui = window.create_imgui();
     imgui.add_item(Rc::new(|ui| {
@@ -126,7 +62,6 @@ fn main() {
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
-            cam.handle_event(&event);
             imgui.handle_event(&event);
             match event {
                 sdl2::event::Event::Quit { .. } => break 'main,
