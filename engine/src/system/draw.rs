@@ -1,6 +1,6 @@
 use crate::sample::sample_3d::RenderInfo;
 use glish_rs::utils;
-use crate::world::WorldManager;
+use crate::world_manager::WorldManager;
 use legion::{system};
 use crate::camera::Camera;
 use legion::component;

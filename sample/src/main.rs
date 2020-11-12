@@ -11,10 +11,10 @@ extern crate rand;
 extern crate sdl2;
 mod debug_gui;
 use debug_gui::DebugGui;
-use engine::world;
+use engine::world_manager;
 use std::cell::RefCell;
 use engine::mesh::{Mesh, SkyBox};
-use engine::world::WorldManager;
+use engine::world_manager::WorldManager;
 use glish_rs::shader::Shader;
 use engine::sample::sample_3d::RenderInfo;
 use std::collections::HashMap;
@@ -63,7 +63,7 @@ fn main() {
     let sdl = window.sdl();
     let mut event_pump = sdl.event_pump().unwrap();
     let mut cam = camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]));
-    let mut world = world::WorldManager::default();
+    let mut world = world_manager::WorldManager::default();
 
     create_mesh(&mut world);
     create_textures(&mut world);
@@ -99,14 +99,15 @@ fn main() {
         }
     };
     let mut world_legion = legion::World::default();
-    world_legion.push((SkyBox, skybox));
     world_legion.push((1, plane));
+    world_legion.push((SkyBox, skybox));
     // world_legion.push((2, main_object));
     world_legion.push((1, camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]))));
     let mut schedule = Schedule::builder()
+        .add_system(draw_skybox_system())
+        .flush()
         .add_system(draw_entity_system())
         .add_system(update_camera_system())
-        .add_system(draw_skybox_system())
         .build();
 
     let mut resources = Resources::default();
