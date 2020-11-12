@@ -54,7 +54,7 @@ impl DebugGui {
             None
         }
     }
-    pub fn get_obj_path(&self) -> &Path {
+    pub fn _get_obj_path(&self) -> &Path {
         &Path::new(self.obj_arrays[self.old_one as usize].to_str())
     }
     pub fn use_normal_map(&self) -> bool {

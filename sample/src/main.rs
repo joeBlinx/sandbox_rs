@@ -1,6 +1,5 @@
 use engine::{
-    camera, handle_event::HandleEvent, sample::sample_3d::Sample3d,
-    traits::Draw, window,
+    camera, handle_event::HandleEvent, window,
 };
 use std::rc::Rc;
 use imgui::im_str;
@@ -12,7 +11,7 @@ extern crate sdl2;
 mod debug_gui;
 use debug_gui::DebugGui;
 use engine::world_manager;
-use std::cell::RefCell;
+
 use engine::mesh::{Mesh, SkyBox};
 use engine::world_manager::WorldManager;
 use glish_rs::shader::Shader;
@@ -69,7 +68,7 @@ fn main() {
     create_textures(&mut world);
     create_program(&mut world);
 
-    let main_object = RenderInfo {
+    let _main_object = RenderInfo {
         mesh: String::from("cube"),
         program: String::from("classic"),
         textures:{
@@ -145,7 +144,7 @@ fn main() {
             imgui.render(&event_pump.mouse_state());
         }
         match debug_gui.get_obj_path_if_change() {
-            Some(path) => {}
+            Some(_path) => {}
             _ => {}
         }
         if debug_gui.use_normal_map() {
