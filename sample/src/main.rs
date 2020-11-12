@@ -15,11 +15,11 @@ use engine::world_manager;
 use engine::mesh::{Mesh, SkyBox};
 use engine::world_manager::WorldManager;
 use glish_rs::shader::Shader;
-use engine::sample::sample_3d::RenderInfo;
 use std::collections::HashMap;
 use engine::legion;
 use engine::legion::{Schedule, Resources};
 use engine::system::draw::*;
+use engine::component::entity_render_info::EntityRenderInfo;
 
 fn create_mesh(world: &mut WorldManager){
     let cube = Mesh::from_obj_file(Path::new("assets/obj/cube.obj")).unwrap();
@@ -68,7 +68,7 @@ fn main() {
     create_textures(&mut world);
     create_program(&mut world);
 
-    let _main_object = RenderInfo {
+    let _main_object = EntityRenderInfo {
         mesh: String::from("cube"),
         program: String::from("classic"),
         textures:{
@@ -77,7 +77,7 @@ fn main() {
             textures
         }
     };
-    let plane = RenderInfo{
+    let plane = EntityRenderInfo{
         mesh: String::from("plane"),
         program: String::from("normal_map"),
         textures:{
@@ -88,7 +88,7 @@ fn main() {
         }
     };
 
-    let skybox = RenderInfo{
+    let skybox = EntityRenderInfo{
         mesh: String::from("cube"),
         program: String::from("skybox"),
         textures:{
