@@ -10,10 +10,10 @@ extern crate rand;
 extern crate sdl2;
 mod debug_gui;
 use debug_gui::DebugGui;
-use engine::world_manager;
+use engine::render_info;
 
 use engine::mesh::{Mesh, SkyBox};
-use engine::world_manager::WorldManager;
+use engine::render_info::RenderInfo;
 use glish_rs::shader::Shader;
 use std::collections::HashMap;
 use engine::legion;
@@ -21,7 +21,7 @@ use engine::legion::{Schedule, Resources};
 use engine::system::draw::*;
 use engine::component::entity_render_info::EntityRenderInfo;
 
-fn create_mesh(world: &mut WorldManager){
+fn create_mesh(world: &mut RenderInfo){
     let cube = Mesh::from_obj_file(Path::new("assets/obj/cube.obj")).unwrap();
     let sphere = Mesh::from_obj_file(Path::new("assets/obj/sphere.obj")).unwrap();
     let susan = Mesh::from_obj_file(Path::new("assets/obj/susan.obj")).unwrap();
@@ -32,13 +32,13 @@ fn create_mesh(world: &mut WorldManager){
     world.add_mesh("plane", Mesh::create_plane());
 }
 
-fn create_textures(world: &mut WorldManager){
+fn create_textures(world: &mut RenderInfo){
     world.add_textures("lava", Path::new("assets/lava.png"));
     world.add_textures("brick", Path::new("assets/normal_mapping/brickwall.jpg"));
     world.add_textures("brick_normal", Path::new("assets/normal_mapping/brickwall_normal.jpg"));
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
-fn create_program(world: &mut WorldManager){
+fn create_program(world: &mut RenderInfo){
     let shaders_classic=[
         Shader::from_vert_file(Path::new("assets/shader/vertex/triangle.vert")).unwrap(),
         Shader::from_frag_file(Path::new("assets/shader/fragment/triangle.frag")).unwrap()
@@ -62,7 +62,7 @@ fn main() {
     let sdl = window.sdl();
     let mut event_pump = sdl.event_pump().unwrap();
     let mut cam = camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]));
-    let mut world = world_manager::WorldManager::default();
+    let mut world = render_info::RenderInfo::default();
 
     create_mesh(&mut world);
     create_textures(&mut world);
@@ -98,16 +98,12 @@ fn main() {
         }
     };
     let mut world_legion = legion::World::default();
-    world_legion.push((1, plane));
-    world_legion.push((SkyBox, skybox));
-    // world_legion.push((2, main_object));
-    world_legion.push((1, camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]))));
     let mut schedule = Schedule::builder()
-        .add_system(draw_skybox_system())
-        .flush()
-        .add_system(draw_entity_system())
-        .add_system(update_camera_system())
-        .build();
+    .add_system(draw_skybox_system())
+    .flush()
+    .add_system(draw_entity_system())
+    .add_system(update_camera_system())
+    .build();
 
     let mut resources = Resources::default();
     resources.insert(world);
@@ -121,6 +117,12 @@ fn main() {
     let mut debug_gui = DebugGui::default();
     debug_gui.create_gui(&mut imgui);
 
+    let mut new_world = engine::world::World::default();
+    new_world.use_render_info(|mut render|{
+        create_textures(&mut render);
+    });
+    new_world.add_components((1, plane));
+    new_world.add_components((1, camera::Camera::new(make_vec3(&[0.7, 1., 10.]), make_vec3(&[0., 0., 0.]))));
     'main: loop {
         window.clear();
         for event in event_pump.poll_iter() {
@@ -139,7 +141,7 @@ fn main() {
                 _ => {}
             }
         }
-        schedule.execute(&mut world_legion, &mut resources);
+        new_world.run();
         if display_gui {
             imgui.render(&event_pump.mouse_state());
         }

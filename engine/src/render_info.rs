@@ -4,14 +4,14 @@ use glish_rs::texture::{Texture, PathCubeMaps};
 use crate::mesh::Mesh;
 use std::path::Path;
 use glish_rs::shader::Shader;
-pub struct WorldManager {
+pub struct RenderInfo {
     pub(crate) programs: HashMap<String, Program>,
     pub(crate) textures: HashMap<String, Texture>,
     pub(crate) meshs: HashMap<String, Mesh>,
 }
 
 
-impl WorldManager {
+impl RenderInfo {
 
     pub fn add_program_from_shaders(&mut self, name: &str, shaders: &[Shader]){
         match Program::from_shaders(shaders){
@@ -50,9 +50,9 @@ impl WorldManager {
         self.meshs.insert(name.to_owned(), mesh);
     }
 }
-impl Default for WorldManager {
+impl Default for RenderInfo {
     fn default() -> Self{
-        WorldManager {
+        RenderInfo {
             programs: HashMap::new(),
             textures: HashMap::new(),
             meshs: HashMap::new(),

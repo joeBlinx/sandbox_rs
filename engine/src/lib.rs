@@ -6,7 +6,9 @@ pub mod component;
 //pub mod skybox;
 pub mod traits;
 pub mod window;
-pub mod world_manager;
+pub mod render_info;
 pub mod mesh;
 pub mod system;
+pub mod world;
+
 pub use legion;
