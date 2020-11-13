@@ -1,5 +1,5 @@
 use engine::{
-    camera, handle_event::HandleEvent, window,
+    camera, window,
 };
 use std::rc::Rc;
 use imgui::im_str;
@@ -10,15 +10,9 @@ extern crate rand;
 extern crate sdl2;
 mod debug_gui;
 use debug_gui::DebugGui;
-use engine::render_info;
 
-use engine::mesh::{Mesh, SkyBox};
 use engine::render_info::RenderInfo;
-use glish_rs::shader::Shader;
 use std::collections::HashMap;
-use engine::legion;
-use engine::legion::{Schedule, Resources};
-use engine::system::draw::*;
 use engine::component::entity_render_info::EntityRenderInfo;
 
 fn create_textures(world: &mut RenderInfo){

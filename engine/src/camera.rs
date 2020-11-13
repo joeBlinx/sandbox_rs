@@ -10,6 +10,20 @@ pub struct Camera {
 }
 
 impl Camera {
+    pub fn create_perspective(position: nalgebra_glm::Vec3, center: nalgebra_glm::Vec3, aspect:f32) -> Camera{
+        Camera {
+            position,
+            center,
+            proj: nalgebra_glm::perspective(aspect, 3.14 / 4.0, 0.1, 1000.),
+        }
+    }
+    pub fn create_orthographic(position: nalgebra_glm::Vec3, center: nalgebra_glm::Vec3 ) -> Camera{
+        Camera {
+            position,
+            center,
+            proj: nalgebra_glm::perspective(aspect, 3.14 / 4.0, 0.1, 1000.),
+        }
+    }
     pub fn new(position: nalgebra_glm::Vec3, center: nalgebra_glm::Vec3) -> Camera {
         Camera {
             position,

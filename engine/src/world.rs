@@ -5,7 +5,6 @@ use crate::render_info::RenderInfo;
 use std::path::Path;
 use glish_rs::shader::Shader;
 use crate::mesh::Mesh;
-use std::borrow::BorrowMut;
 use crate::system::draw::*;
 use legion::storage::IntoComponentSource;
 
@@ -64,12 +63,12 @@ fn create_program(world: &mut RenderInfo){
         Shader::from_frag_file(Path::new("assets/shader/fragment/normal_mapping.frag")).unwrap()
     ];
 
-    let skybox_shaders = [
+    let _skybox_shaders = [
         Shader::from_vert_file(Path::new("assets/shader/vertex/skybox.vert")).unwrap(),
         Shader::from_frag_file(Path::new("assets/shader/fragment/skybox.frag")).unwrap()
     ];
 
     world.add_program_from_shaders("classic", &shaders_classic);
     world.add_program_from_shaders("normal_map", &shaders_with_normal);
-    world.add_program_from_shaders("skybox", &skybox_shaders);
+   // world.add_program_from_shaders("skybox", &skybox_shaders);
 }
