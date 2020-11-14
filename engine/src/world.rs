@@ -10,8 +10,10 @@ use legion::world::Entry;
 use legion::{Entity, Schedule};
 use std::path::Path;
 use crate::component::event::CloseEvent;
+use crate::window::Window;
 
 pub struct World {
+    window: crate::window::Window,
     world_legion: legion::World,
     resources: legion::Resources,
     schedule: legion::Schedule,
@@ -19,13 +21,15 @@ pub struct World {
 }
 
 impl World {
-    pub fn run(&mut self, event_pump: &mut sdl2::EventPump) {
-        for event in event_pump.poll_iter() {
+    pub fn run(&mut self) {
+        self.window.clear();
+        for event in self.window.sdl().event_pump().unwrap().poll_iter() {
             self.resources.insert(event);
             self.event_schedule.execute(&mut self.world_legion, &mut self.resources);
         }
         self.schedule
             .execute(&mut self.world_legion, &mut self.resources);
+        self.window.refresh();
     }
     pub fn use_render_info<T: Fn(&mut RenderInfo)>(&mut self, function: T) {
         function(&mut *self.resources.get_mut::<RenderInfo>().unwrap());
@@ -47,10 +51,8 @@ impl World {
     pub fn legion_world(&mut self) -> &mut legion::World{
         &mut self.world_legion
     }
-}
-
-impl Default for World {
-    fn default() -> Self {
+    pub fn new(ogl_version:(u8, u8), width:i32, height:i32) -> World{
+        let window = Window::new(ogl_version, width, height);
         let schedule = Schedule::builder()
             .add_system(draw_skybox_system())
             .flush()
@@ -71,10 +73,12 @@ impl Default for World {
             schedule,
             event_schedule: Schedule::builder()
                 .add_system(quit_event_system())
-                .build()
+                .build(),
+            window
         }
     }
 }
+
 
 fn create_program(world: &mut RenderInfo) {
     let shaders_classic = [

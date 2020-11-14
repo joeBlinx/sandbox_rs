@@ -7,7 +7,7 @@ pub mod mesh;
 pub mod render_info;
 pub mod system;
 pub mod traits;
-pub mod window;
+pub(crate) mod window;
 pub mod world;
 
 pub use legion;

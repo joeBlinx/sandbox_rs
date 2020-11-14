@@ -1,4 +1,3 @@
-use engine::window;
 use imgui::{im_str, Condition, Window};
 use nalgebra_glm::make_vec3;
 use std::path::Path;
@@ -24,12 +23,10 @@ fn create_textures(world: &mut RenderInfo) {
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
 
+
 fn main() {
     let width = 1366;
     let height = 768;
-    let window = window::Window::new((4, 5), width, height);
-    let sdl = window.sdl();
-    let mut event_pump = sdl.event_pump().unwrap();
 
     let plane = EntityRenderInfo {
         mesh: String::from("plane"),
@@ -45,10 +42,10 @@ fn main() {
     let mut right = width as f32;
     let mut bottom = -height as f32;
     let mut top = height as f32;
-    let (mut imgui, mut imgui_sdl2, imgui_renderer) = window.create_imgui();
+    //let (mut imgui, mut imgui_sdl2, imgui_renderer) = window.create_imgui();
     let mut display_gui = false;
 
-    let mut new_world = engine::world::World::default();
+    let mut new_world = engine::world::World::new((4, 5), width, height);
     new_world.use_render_info(|mut render| {
         create_textures(&mut render);
     });
@@ -58,7 +55,7 @@ fn main() {
         rotation:nalgebra_glm::make_vec3(&[0., 0., 0.]),
         scale:nalgebra_glm::make_vec3(&[10., 10., 10.]),
     }));
-    let camera = new_world.add_components((
+    let _camera = new_world.add_components((
         camera::Camera::create_orthographic(
             make_vec3(&[0.7, 1., 10.]),
             make_vec3(&[0., 0., 0.]),
@@ -70,7 +67,6 @@ fn main() {
     ));
 
     'main: loop {
-        window.clear();
         // for event in event_pump.poll_iter() {
         //     imgui_sdl2.handle_event(&mut imgui, &event);
         //     match event {
@@ -92,30 +88,29 @@ fn main() {
                 break 'main;
             }
         }
-        new_world.run(&mut event_pump);
-        if display_gui {
-            imgui_sdl2.prepare_frame(
-                imgui.io_mut(),
-                window.sdl_window(),
-                &event_pump.mouse_state(),
-            );
-            let ui = imgui.frame();
-            Window::new(im_str!("Hello world"))
-                .size([300.0, 500.0], Condition::FirstUseEver)
-                .build(&ui, || {
-                    ui.drag_float(im_str!("left"), &mut left).build();
-                    ui.drag_float(im_str!("right"), &mut right).build();
-                    ui.drag_float(im_str!("bottom"), &mut bottom).build();
-                    ui.drag_float(im_str!("top"), &mut top).build();
-                });
-            imgui_sdl2.prepare_render(&ui, window.sdl_window());
-            imgui_renderer.render(ui);
-        }
-        let mut cam_components = new_world.entry(camera).unwrap();
-        let cam = cam_components.get_component_mut::<Camera>().unwrap();
-        cam.new_orthographic(left, right, bottom, top);
+        new_world.run();
+        // if display_gui {
+        //     imgui_sdl2.prepare_frame(
+        //         imgui.io_mut(),
+        //         window.sdl_window(),
+        //         &event_pump.mouse_state(),
+        //     );
+        //     let ui = imgui.frame();
+        //     Window::new(im_str!("Hello world"))
+        //         .size([300.0, 500.0], Condition::FirstUseEver)
+        //         .build(&ui, || {
+        //             ui.drag_float(im_str!("left"), &mut left).build();
+        //             ui.drag_float(im_str!("right"), &mut right).build();
+        //             ui.drag_float(im_str!("bottom"), &mut bottom).build();
+        //             ui.drag_float(im_str!("top"), &mut top).build();
+        //         });
+        //     imgui_sdl2.prepare_render(&ui, window.sdl_window());
+        //     imgui_renderer.render(ui);
+        // }
+        // let mut cam_components = new_world.entry(camera).unwrap();
+        // let cam = cam_components.get_component_mut::<Camera>().unwrap();
+        // cam.new_orthographic(left, right, bottom, top);
         let ten_millis = std::time::Duration::from_millis(17);
         std::thread::sleep(ten_millis);
-        window.refresh();
     }
 }
