@@ -2,21 +2,28 @@ use crate::mesh::Mesh;
 use crate::render_info;
 use crate::render_info::RenderInfo;
 use crate::system::draw::*;
+use crate::system::event::*;
 use glish_rs::shader::Shader;
 use legion;
 use legion::storage::IntoComponentSource;
 use legion::world::Entry;
 use legion::{Entity, Schedule};
 use std::path::Path;
+use crate::component::event::CloseEvent;
 
 pub struct World {
     world_legion: legion::World,
     resources: legion::Resources,
     schedule: legion::Schedule,
+    event_schedule: legion::Schedule,
 }
 
 impl World {
-    pub fn run(&mut self) {
+    pub fn run(&mut self, event_pump: &mut sdl2::EventPump) {
+        for event in event_pump.poll_iter() {
+            self.resources.insert(event);
+            self.event_schedule.execute(&mut self.world_legion, &mut self.resources);
+        }
         self.schedule
             .execute(&mut self.world_legion, &mut self.resources);
     }
@@ -32,6 +39,13 @@ impl World {
     }
     pub fn entry(&mut self, entity: legion::Entity) -> Option<Entry> {
         self.world_legion.entry(entity)
+    }
+
+    fn run_event(&mut self){
+        self.event_schedule.execute(&mut self.world_legion, &mut self.resources);
+    }
+    pub fn legion_world(&mut self) -> &mut legion::World{
+        &mut self.world_legion
     }
 }
 
@@ -49,10 +63,15 @@ impl Default for World {
 
         let mut resources = legion::Resources::default();
         resources.insert(render_info);
+        let mut world_legion = legion::World::default();
+        world_legion.push((1, CloseEvent{event:false}));
         World {
-            world_legion: legion::World::default(),
+            world_legion,
             resources,
             schedule,
+            event_schedule: Schedule::builder()
+                .add_system(quit_event_system())
+                .build()
         }
     }
 }
