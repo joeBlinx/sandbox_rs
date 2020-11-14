@@ -17,19 +17,24 @@ impl Camera {
             proj: nalgebra_glm::perspective(aspect, 3.14 / 4.0, 0.1, 1000.),
         }
     }
-    pub fn create_orthographic(position: nalgebra_glm::Vec3, center: nalgebra_glm::Vec3 ) -> Camera{
+    pub fn create_orthographic(position: nalgebra_glm::Vec3, center: nalgebra_glm::Vec3,left: f32,
+                               right: f32,
+                               bottom: f32,
+                               top: f32) -> Camera{
         Camera {
             position,
             center,
-            proj: nalgebra_glm::perspective(aspect, 3.14 / 4.0, 0.1, 1000.),
+            proj: nalgebra_glm::ortho(left, right, bottom, top, -10., 100.),
         }
     }
-    pub fn new(position: nalgebra_glm::Vec3, center: nalgebra_glm::Vec3) -> Camera {
-        Camera {
-            position,
-            center,
-            proj: nalgebra_glm::perspective(16. / 9., 3.14 / 4.0, 0.1, 1000.),
-        }
+    pub fn new_perspective(&mut self, aspect :f32, fovy: f32, near:f32, far:f32){
+        self.proj = nalgebra_glm::perspective(aspect, fovy, near, far);
+    }
+    pub fn new_orthographic(&mut self, left: f32,
+                            right: f32,
+                            bottom: f32,
+                            top: f32){
+        self.proj = nalgebra_glm::ortho(left, right, bottom, top, -10., 100.);
     }
     pub fn get_view(&self) -> nalgebra_glm::Mat4 {
         nalgebra_glm::look_at(

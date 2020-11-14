@@ -10,7 +10,7 @@ out vec3 frag_pos;
 out vec3 uv_out;
 void main()
 {
-    gl_Position = proj*view*vec4(Position, 1.0);
+    gl_Position = proj*view*vec4(100*Position, 1.0);
     frag_pos = Position;
     normal = normals;
     uv_out = uv;

@@ -1,6 +1,5 @@
 extern crate gl;
 extern crate sdl2;
-use crate::imgui_wrap::ImguiWrap;
 use gl::types::*;
 use std::ffi::{c_void, CStr};
 pub struct Window {
@@ -29,7 +28,7 @@ extern "system" fn debug_callback(
 }
 
 impl Window {
-    pub fn new(ogl_version: (u8, u8)) -> Window {
+    pub fn new(ogl_version: (u8, u8), width:i32, height:i32) -> Window {
         let (major, minor) = ogl_version;
         let sdl = sdl2::init().expect("Error while init sdl2");
         let video_subsystem = sdl.video().expect("Error while init sdl video");
@@ -38,7 +37,7 @@ impl Window {
         gl_attr.set_context_profile(sdl2::video::GLProfile::Core);
         gl_attr.set_context_version(major, minor);
         let window = video_subsystem
-            .window("Tartes aux poireaux", 1366, 768)
+            .window("Tartes aux poireaux", width as u32, height as u32)
             .opengl()
             .resizable()
             .build()
@@ -78,6 +77,9 @@ impl Window {
         &self.sdl
     }
 
+    pub fn sdl_window(&self) -> &sdl2::video::Window{
+        &self.window
+    }
     pub fn refresh(&self) {
         self.window.gl_swap_window();
     }
@@ -87,7 +89,14 @@ impl Window {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
-    pub fn create_imgui(&self) -> ImguiWrap {
-        ImguiWrap::new(&self.video_subsystem, &self.window)
+    pub fn create_imgui(&self) -> (imgui::Context, imgui_sdl2::ImguiSdl2, imgui_opengl_renderer::Renderer) {
+        let mut imgui = imgui::Context::create();
+        imgui.set_ini_filename(None);
+        let imgui_sdl2 = imgui_sdl2::ImguiSdl2::new(&mut imgui, &self.window);
+        let renderer = imgui_opengl_renderer::Renderer::new(&mut imgui, |s| {
+            self.video_subsystem.gl_get_proc_address(s) as _
+        });
+
+       (imgui, imgui_sdl2, renderer)
     }
 }

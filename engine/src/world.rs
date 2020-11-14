@@ -7,6 +7,7 @@ use glish_rs::shader::Shader;
 use crate::mesh::Mesh;
 use crate::system::draw::*;
 use legion::storage::IntoComponentSource;
+use legion::world::Entry;
 
 pub struct World{
     world_legion: legion::World,
@@ -27,6 +28,9 @@ impl World{
         where
             Option<T>: IntoComponentSource{
         self.world_legion.push(components)
+    }
+    pub fn entry(&mut self, entity: legion::Entity) -> Option<Entry>{
+        self.world_legion.entry(entity)
     }
 
 }
