@@ -1,15 +1,18 @@
-use glish_rs::utils;
-use crate::render_info::RenderInfo;
-use legion::{system};
-use crate::camera::Camera;
-use legion::component;
+use crate::component::camera::Camera;
+use crate::component::entity_render_info::{EntityRenderInfo, RigidBody};
 use crate::mesh::SkyBox;
-use crate::component::entity_render_info::EntityRenderInfo;
+use crate::render_info::RenderInfo;
+use glish_rs::utils;
+use legion::component;
+use legion::system;
 
-fn draw(render_information: &EntityRenderInfo, world_manager: &RenderInfo){
+fn draw(render_information: &EntityRenderInfo, world_manager: &RenderInfo) {
     let mesh = world_manager.meshs.get(&render_information.mesh).unwrap();
     mesh.vao.bind();
-    let opengl_prog = world_manager.programs.get(&render_information.program).unwrap();
+    let opengl_prog = world_manager
+        .programs
+        .get(&render_information.program)
+        .unwrap();
     opengl_prog.set_used();
 
     let mut i = 0 as u32;
@@ -25,16 +28,21 @@ fn draw(render_information: &EntityRenderInfo, world_manager: &RenderInfo){
 
 #[system(for_each)]
 #[filter(!component::<SkyBox>())]
-pub fn draw_entity(render_information:&EntityRenderInfo,
-                   #[resource] world_manager: &RenderInfo
-               ){
-   draw(render_information, world_manager);
+pub fn draw_entity(render_information: &EntityRenderInfo, rigid_body: &RigidBody, #[resource] world_manager: &RenderInfo) {
+    let opengl_prog = world_manager
+        .programs
+        .get(&render_information.program)
+        .unwrap();
+    opengl_prog.set_uni("model", rigid_body.model_matrix());
+    draw(render_information, world_manager);
 }
 
 #[system(for_each)]
-pub fn draw_skybox(render_information:&EntityRenderInfo, _: &SkyBox,
-                   #[resource] world_manager: &RenderInfo
-){
+pub fn draw_skybox(
+    render_information: &EntityRenderInfo,
+    _: &SkyBox,
+    #[resource] world_manager: &RenderInfo,
+) {
     unsafe {
         gl::DepthFunc(gl::LEQUAL);
     }
@@ -44,11 +52,8 @@ pub fn draw_skybox(render_information:&EntityRenderInfo, _: &SkyBox,
     }
 }
 #[system(for_each)]
-pub fn update_camera(cam: &Camera,
-                 #[resource] world_manager: &RenderInfo
-
-){
-    for (_, program) in world_manager.programs.iter(){
+pub fn update_camera(cam: &Camera, #[resource] world_manager: &RenderInfo) {
+    for (_, program) in world_manager.programs.iter() {
         program.set_used();
         program.set_uni("pos_cam", cam.get_position());
         program.set_uni("proj", cam.get_proj());

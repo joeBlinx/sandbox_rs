@@ -1,4 +1,4 @@
-use crate::camera::Camera;
+use crate::component::camera::Camera;
 pub trait Normals {
     fn get_normals(&self) -> &[f32; 3];
 }

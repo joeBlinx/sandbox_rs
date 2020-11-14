@@ -28,7 +28,7 @@ extern "system" fn debug_callback(
 }
 
 impl Window {
-    pub fn new(ogl_version: (u8, u8), width:i32, height:i32) -> Window {
+    pub fn new(ogl_version: (u8, u8), width: i32, height: i32) -> Window {
         let (major, minor) = ogl_version;
         let sdl = sdl2::init().expect("Error while init sdl2");
         let video_subsystem = sdl.video().expect("Error while init sdl video");
@@ -77,7 +77,7 @@ impl Window {
         &self.sdl
     }
 
-    pub fn sdl_window(&self) -> &sdl2::video::Window{
+    pub fn sdl_window(&self) -> &sdl2::video::Window {
         &self.window
     }
     pub fn refresh(&self) {
@@ -89,7 +89,13 @@ impl Window {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
-    pub fn create_imgui(&self) -> (imgui::Context, imgui_sdl2::ImguiSdl2, imgui_opengl_renderer::Renderer) {
+    pub fn create_imgui(
+        &self,
+    ) -> (
+        imgui::Context,
+        imgui_sdl2::ImguiSdl2,
+        imgui_opengl_renderer::Renderer,
+    ) {
         let mut imgui = imgui::Context::create();
         imgui.set_ini_filename(None);
         let imgui_sdl2 = imgui_sdl2::ImguiSdl2::new(&mut imgui, &self.window);
@@ -97,6 +103,6 @@ impl Window {
             self.video_subsystem.gl_get_proc_address(s) as _
         });
 
-       (imgui, imgui_sdl2, renderer)
+        (imgui, imgui_sdl2, renderer)
     }
 }

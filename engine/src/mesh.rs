@@ -1,16 +1,16 @@
-use glish_rs::buffer::{Vao, VboSettings};
-use std::path::Path;
-use std::fs::File;
-use std::io::BufReader;
-use obj::{Obj, TexturedVertex, load_obj};
 use crate::load;
 use glish_rs::buffer;
+use glish_rs::buffer::{Vao, VboSettings};
+use obj::{load_obj, Obj, TexturedVertex};
+use std::fs::File;
+use std::io::BufReader;
+use std::path::Path;
 pub struct SkyBox;
-pub struct Mesh{
-    pub (crate) vao: Vao,
-    pub (crate) number_indices: usize
+pub struct Mesh {
+    pub(crate) vao: Vao,
+    pub(crate) number_indices: usize,
 }
-impl Mesh{
+impl Mesh {
     pub fn from_obj_file(obj_path: &Path) -> Result<Mesh, std::io::Error> {
         let file = File::open(obj_path)?;
         let input = BufReader::new(file);
@@ -21,15 +21,13 @@ impl Mesh{
         let vbo = buffer::Vbo::create(vertices);
         let vao = buffer::Vao::create(vbo_indices, vbo, &vbo_settings);
         let number_indices = number_indices;
-        Ok(
-            Mesh{
-                vao,
-                number_indices
-            }
-        )
+        Ok(Mesh {
+            vao,
+            number_indices,
+        })
     }
 
-    pub fn create_plane() -> Self{
+    pub fn create_plane() -> Self {
         let vertices = [
             -1., -1., 0., 1., 0., 0., 1., //1
             1., 1., 1., 0., 0., 0., 1., //2
@@ -45,13 +43,15 @@ impl Mesh{
                 stride: 7,
                 offset: 0,
             },
-            VboSettings {// uv
+            VboSettings {
+                // uv
                 location: 1,
                 size: 2,
                 stride: 7,
                 offset: 2,
             },
-            VboSettings { // normal
+            VboSettings {
+                // normal
                 location: 2,
                 size: 3,
                 stride: 7,
