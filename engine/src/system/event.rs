@@ -19,7 +19,7 @@ pub fn quit_event (close_event: &mut CloseEvent, #[resource]event: &sdl2::event:
     }
 }
 
-#[system]
-pub fn imgui_event(#[resource]imgui: &mut Mutex<component::imgui::ImGuiInfo>, #[resource]event: &sdl2::event::Event){
-    //imgui.imgui_sdl2.handle_event(&mut imgui.context, &event);
+#[system(for_each)]
+pub fn imgui_event(imgui: &mut component::imgui::ImGuiInfo, #[resource]event: &sdl2::event::Event){
+     imgui.imgui_sdl2.handle_event(&mut imgui.context, &event);
 }

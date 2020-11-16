@@ -11,7 +11,11 @@ use engine::component::entity_render_info::{EntityRenderInfo, RigidBody};
 use engine::render_info::RenderInfo;
 use std::collections::HashMap;
 use engine::component::event::CloseEvent;
-use engine::legion::{Read, IntoQuery};
+use engine::legion::{Read, IntoQuery, Schedule};
+use engine::system::{
+    draw::*,
+    event::*
+};
 
 fn create_textures(world: &mut RenderInfo) {
     world.add_textures("lava", Path::new("assets/lava.png"));
@@ -22,7 +26,28 @@ fn create_textures(world: &mut RenderInfo) {
     );
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
-
+pub fn imgui_draw(imgui_info: &mut engine::component::imgui::ImGuiInfo){
+    imgui_info.imgui_sdl2.prepare_frame(
+        imgui_info.context.io_mut(),
+            window.sdl_window(),
+            &event_pump.mouse_state(),
+        );
+    let ui = imgui_info.context.frame();
+    let mut left = 2.0;
+    let mut right = 2.0;
+    let mut bottom = 2.0;
+    let mut left = 2.0;
+    Window::new(im_str!("Hello world"))
+        .size([300.0, 500.0], Condition::FirstUseEver)
+        .build(&ui, || {
+            ui.drag_float(im_str!("left"), &mut left).build();
+            ui.drag_float(im_str!("right"), &mut right).build();
+            ui.drag_float(im_str!("bottom"), &mut bottom).build();
+            ui.drag_float(im_str!("top"), &mut top).build();
+        });
+    imgui_info.imgui_sdl2.prepare_render(&ui, window.sdl_window());
+    imgui_info.renderer.render(ui);
+}
 
 fn main() {
     let width = 1366;
@@ -42,10 +67,18 @@ fn main() {
     let mut right = width as f32;
     let mut bottom = -height as f32;
     let mut top = height as f32;
-    //let (mut imgui, mut imgui_sdl2, imgui_renderer) = window.create_imgui();
     let mut display_gui = false;
 
-    let mut new_world = engine::world::World::new((4, 5), width, height);
+    let mut new_world = engine::world::World::new(
+        (4, 5), width, height,
+        Schedule::builder()
+            .add_system(draw_entity_system())
+            .add_system(update_camera_system())
+            .build(),
+        Schedule::builder()
+            .add_system(quit_event_system())
+            .add_system(imgui_event_system())
+            .build());
     new_world.use_render_info(|mut render| {
         create_textures(&mut render);
     });

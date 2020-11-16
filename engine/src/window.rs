@@ -2,6 +2,8 @@ extern crate gl;
 extern crate sdl2;
 use gl::types::*;
 use std::ffi::{c_void, CStr};
+use crate::component::imgui::ImGuiInfo;
+
 pub struct Window {
     sdl: sdl2::Sdl,
     video_subsystem: sdl2::VideoSubsystem,
@@ -91,11 +93,7 @@ impl Window {
     }
     pub fn create_imgui(
         &self,
-    ) -> (
-        imgui::Context,
-        imgui_sdl2::ImguiSdl2,
-        imgui_opengl_renderer::Renderer,
-    ) {
+    ) -> ImGuiInfo{
         let mut imgui = imgui::Context::create();
         imgui.set_ini_filename(None);
         let imgui_sdl2 = imgui_sdl2::ImguiSdl2::new(&mut imgui, &self.window);
@@ -103,6 +101,10 @@ impl Window {
             self.video_subsystem.gl_get_proc_address(s) as _
         });
 
-        (imgui, imgui_sdl2, renderer)
+        ImGuiInfo{
+            context: imgui,
+            imgui_sdl2,
+            renderer
+        }
     }
 }

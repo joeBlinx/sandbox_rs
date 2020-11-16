@@ -11,6 +11,7 @@ use legion::{Entity, Schedule};
 use std::path::Path;
 use crate::component::event::CloseEvent;
 use crate::window::Window;
+use std::sync::Mutex;
 
 pub struct World {
     window: crate::window::Window,
@@ -51,14 +52,10 @@ impl World {
     pub fn legion_world(&mut self) -> &mut legion::World{
         &mut self.world_legion
     }
-    pub fn new(ogl_version:(u8, u8), width:i32, height:i32) -> World{
+    pub fn new(ogl_version:(u8, u8), width:i32, height:i32,
+               schedule: Schedule, event_schedule:
+    Schedule) -> World{
         let window = Window::new(ogl_version, width, height);
-        let schedule = Schedule::builder()
-            .add_system(draw_skybox_system())
-            .flush()
-            .add_system(draw_entity_system())
-            .add_system(update_camera_system())
-            .build();
         let mut render_info = render_info::RenderInfo::default();
         create_program(&mut render_info);
         render_info.add_mesh("plane", Mesh::create_plane());
@@ -71,10 +68,7 @@ impl World {
             world_legion,
             resources,
             schedule,
-            event_schedule: Schedule::builder()
-                .add_system(quit_event_system())
-                .add_system(imgui_event_system())
-                .build(),
+            event_schedule,
             window
         }
     }
