@@ -73,6 +73,7 @@ impl World {
             schedule,
             event_schedule: Schedule::builder()
                 .add_system(quit_event_system())
+                .add_system(imgui_event_system())
                 .build(),
             window
         }

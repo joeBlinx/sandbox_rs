@@ -53,7 +53,7 @@ fn main() {
     RigidBody{
         position:nalgebra_glm::make_vec3(&[0., 0., 0.]),
         rotation:nalgebra_glm::make_vec3(&[0., 0., 0.]),
-        scale:nalgebra_glm::make_vec3(&[10., 10., 10.]),
+        scale:nalgebra_glm::make_vec3(&[100., 100., 1.]),
     }));
     let _camera = new_world.add_components((
         camera::Camera::create_orthographic(

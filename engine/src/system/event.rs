@@ -1,6 +1,8 @@
 use legion::system;
 use sdl2;
 use crate::component::event::CloseEvent;
+use crate::component;
+use std::sync::{Arc, Mutex};
 
 #[system(for_each)]
 pub fn quit_event (close_event: &mut CloseEvent, #[resource]event: &sdl2::event::Event){
@@ -15,4 +17,9 @@ pub fn quit_event (close_event: &mut CloseEvent, #[resource]event: &sdl2::event:
         },
         _ => {}
     }
+}
+
+#[system]
+pub fn imgui_event(#[resource]imgui: &mut Mutex<component::imgui::ImGuiInfo>, #[resource]event: &sdl2::event::Event){
+    //imgui.imgui_sdl2.handle_event(&mut imgui.context, &event);
 }
