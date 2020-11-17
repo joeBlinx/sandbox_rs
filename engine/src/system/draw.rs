@@ -6,10 +6,10 @@ use glish_rs::utils;
 use legion::component;
 use legion::system;
 
-fn draw(render_information: &EntityRenderInfo, world_manager: &RenderInfo) {
-    let mesh = world_manager.meshs.get(&render_information.mesh).unwrap();
+fn draw(render_information: &EntityRenderInfo, render_info: &RenderInfo) {
+    let mesh = render_info.meshs.get(&render_information.mesh).unwrap();
     mesh.vao.bind();
-    let opengl_prog = world_manager
+    let opengl_prog = render_info
         .programs
         .get(&render_information.program)
         .unwrap();
@@ -18,7 +18,7 @@ fn draw(render_information: &EntityRenderInfo, world_manager: &RenderInfo) {
     let mut i = 0 as u32;
     for (key, texture_name) in render_information.textures.iter() {
         opengl_prog.set_uni(&key[..], i as i32);
-        let texture = world_manager.textures.get(texture_name).unwrap();
+        let texture = render_info.textures.get(texture_name).unwrap();
         texture.active(i);
         i += 1;
     }

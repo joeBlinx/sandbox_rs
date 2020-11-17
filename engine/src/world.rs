@@ -14,23 +14,27 @@ use crate::window::Window;
 use std::sync::Mutex;
 
 pub struct World {
-    window: crate::window::Window,
     world_legion: legion::World,
     resources: legion::Resources,
+    event_resources: legion::Resources,
     schedule: legion::Schedule,
     event_schedule: legion::Schedule,
 }
 
 impl World {
     pub fn run(&mut self) {
-        self.window.clear();
-        for event in self.window.sdl().event_pump().unwrap().poll_iter() {
-            self.resources.insert(event);
-            self.event_schedule.execute(&mut self.world_legion, &mut self.resources);
+        {
+            let mut window = &mut *self.resources.get_mut::<Window>().unwrap();
+            window.clear();
+            for event in window.sdl().event_pump().unwrap().poll_iter() {
+                self.event_resources.insert(event);
+                self.event_schedule.execute(&mut self.world_legion, &mut self.event_resources);
+            }
         }
         self.schedule
             .execute(&mut self.world_legion, &mut self.resources);
-        self.window.refresh();
+        let mut window = &mut *self.resources.get_mut::<Window>().unwrap();
+        window.refresh();
     }
     pub fn use_render_info<T: Fn(&mut RenderInfo)>(&mut self, function: T) {
         function(&mut *self.resources.get_mut::<RenderInfo>().unwrap());
@@ -49,7 +53,7 @@ impl World {
     fn run_event(&mut self){
         self.event_schedule.execute(&mut self.world_legion, &mut self.resources);
     }
-    pub fn legion_world(&mut self) -> &mut legion::World{
+    pub fn ecs_world(&mut self) -> &mut legion::World{
         &mut self.world_legion
     }
     pub fn new(ogl_version:(u8, u8), width:i32, height:i32,
@@ -62,15 +66,21 @@ impl World {
 
         let mut resources = legion::Resources::default();
         resources.insert(render_info);
+        resources.insert(window);
+        let mut event_resources = legion::Resources::default();
         let mut world_legion = legion::World::default();
         world_legion.push((1, CloseEvent{event:false}));
         World {
             world_legion,
             resources,
+            event_resources,
             schedule,
-            event_schedule,
-            window
+            event_schedule
         }
+    }
+    pub fn add_imgui(&mut self){
+        let imgui_info = self.resources.get_mut::<Window>().unwrap().create_imgui();
+        self.add_components((1, imgui_info));
     }
 }
 

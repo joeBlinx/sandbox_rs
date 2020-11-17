@@ -4,18 +4,23 @@ use std::path::Path;
 extern crate gl;
 extern crate rand;
 extern crate sdl2;
-
 use engine::component::camera;
 use engine::component::camera::Camera;
 use engine::component::entity_render_info::{EntityRenderInfo, RigidBody};
 use engine::render_info::RenderInfo;
 use std::collections::HashMap;
-use engine::component::event::CloseEvent;
+use engine::component::event::{
+    CloseEvent
+};
+use engine::component::imgui::ImGuiInfo;
 use engine::legion::{Read, IntoQuery, Schedule};
 use engine::system::{
     draw::*,
     event::*
 };
+use engine::legion::component;
+use legion::system;
+use engine::legion::world::SubWorld;
 
 fn create_textures(world: &mut RenderInfo) {
     world.add_textures("lava", Path::new("assets/lava.png"));
@@ -26,17 +31,38 @@ fn create_textures(world: &mut RenderInfo) {
     );
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
-pub fn imgui_draw(imgui_info: &mut engine::component::imgui::ImGuiInfo){
+
+#[system]
+#[write_component(ImGuiInfo)]
+pub fn disable_imgui(world: &mut SubWorld, #[resource]event: &sdl2::event::Event){
+    match event{
+        sdl2::event::Event::KeyDown { keycode, ..} =>{
+            match keycode.unwrap(){
+                sdl2::keyboard::Keycode::F2 =>{
+                    world.push((1, NoGui{}));
+                },
+                _=>{}
+            }
+        },
+        _ => {}
+    }
+}
+
+
+struct NoGui;
+#[system(for_each)]
+pub fn imgui_draw(imgui_info: &mut engine::component::imgui::ImGuiInfo,
+#[resource] window: &mut engine::Window){
     imgui_info.imgui_sdl2.prepare_frame(
         imgui_info.context.io_mut(),
             window.sdl_window(),
-            &event_pump.mouse_state(),
+            &window.sdl().event_pump().unwrap().mouse_state(),
         );
     let ui = imgui_info.context.frame();
     let mut left = 2.0;
     let mut right = 2.0;
     let mut bottom = 2.0;
-    let mut left = 2.0;
+    let mut top = 2.0;
     Window::new(im_str!("Hello world"))
         .size([300.0, 500.0], Condition::FirstUseEver)
         .build(&ui, || {
@@ -74,6 +100,7 @@ fn main() {
         Schedule::builder()
             .add_system(draw_entity_system())
             .add_system(update_camera_system())
+            .add_system(imgui_draw_system())
             .build(),
         Schedule::builder()
             .add_system(quit_event_system())
@@ -82,6 +109,7 @@ fn main() {
     new_world.use_render_info(|mut render| {
         create_textures(&mut render);
     });
+    new_world.add_imgui();
     new_world.add_components((1, plane,
     RigidBody{
         position:nalgebra_glm::make_vec3(&[0., 0., 0.]),
@@ -100,23 +128,9 @@ fn main() {
     ));
 
     'main: loop {
-        // for event in event_pump.poll_iter() {
-        //     imgui_sdl2.handle_event(&mut imgui, &event);
-        //     match event {
-        //         sdl2::event::Event::Quit { .. } => break 'main,
-        //         sdl2::event::Event::KeyDown { keycode, .. } => {
-        //             let keycode = keycode.unwrap();
-        //             match keycode {
-        //                 sdl2::keyboard::Keycode::Escape => break 'main,
-        //                 sdl2::keyboard::Keycode::F2 => display_gui = !display_gui,
-        //                 _ => {}
-        //             }
-        //         }
-        //         _ => {}
-        //     }
-        // }
+
         let mut query = Read::<CloseEvent>::query();
-        for close in query.iter(new_world.legion_world()){
+        for close in query.iter(new_world.ecs_world()){
             if close.event {
                 break 'main;
             }

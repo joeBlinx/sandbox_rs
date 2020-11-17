@@ -15,7 +15,6 @@ imgui = "0.4"
 imgui-sdl2 = "0.11"
 imgui-opengl-renderer = "0.8"
 
-
 [dependencies.legion]
 version = "0.3"
 default-features = false
