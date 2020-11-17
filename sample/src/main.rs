@@ -32,14 +32,13 @@ fn create_textures(world: &mut RenderInfo) {
     world.add_cube_map("sky", Path::new("assets/skybox"));
 }
 
-#[system]
-#[write_component(ImGuiInfo)]
-pub fn disable_imgui(world: &mut SubWorld, #[resource]event: &sdl2::event::Event){
+#[system(for_each)]
+pub fn disable_imgui(imgui_info : &mut engine::component::imgui::ImGuiInfo, #[resource]event: &sdl2::event::Event){
     match event{
         sdl2::event::Event::KeyDown { keycode, ..} =>{
             match keycode.unwrap(){
                 sdl2::keyboard::Keycode::F2 =>{
-                    world.push((1, NoGui{}));
+                    imgui_info.display = !imgui_info.display;
                 },
                 _=>{}
             }
@@ -53,26 +52,28 @@ struct NoGui;
 #[system(for_each)]
 pub fn imgui_draw(imgui_info: &mut engine::component::imgui::ImGuiInfo,
 #[resource] window: &mut engine::Window){
-    imgui_info.imgui_sdl2.prepare_frame(
-        imgui_info.context.io_mut(),
+    if imgui_info.display {
+        imgui_info.imgui_sdl2.prepare_frame(
+            imgui_info.context.io_mut(),
             window.sdl_window(),
             &window.sdl().event_pump().unwrap().mouse_state(),
         );
-    let ui = imgui_info.context.frame();
-    let mut left = 2.0;
-    let mut right = 2.0;
-    let mut bottom = 2.0;
-    let mut top = 2.0;
-    Window::new(im_str!("Hello world"))
-        .size([300.0, 500.0], Condition::FirstUseEver)
-        .build(&ui, || {
-            ui.drag_float(im_str!("left"), &mut left).build();
-            ui.drag_float(im_str!("right"), &mut right).build();
-            ui.drag_float(im_str!("bottom"), &mut bottom).build();
-            ui.drag_float(im_str!("top"), &mut top).build();
-        });
-    imgui_info.imgui_sdl2.prepare_render(&ui, window.sdl_window());
-    imgui_info.renderer.render(ui);
+        let ui = imgui_info.context.frame();
+        let mut left = 2.0;
+        let mut right = 2.0;
+        let mut bottom = 2.0;
+        let mut top = 2.0;
+        Window::new(im_str!("Hello world"))
+            .size([300.0, 500.0], Condition::FirstUseEver)
+            .build(&ui, || {
+                ui.drag_float(im_str!("left"), &mut left).build();
+                ui.drag_float(im_str!("right"), &mut right).build();
+                ui.drag_float(im_str!("bottom"), &mut bottom).build();
+                ui.drag_float(im_str!("top"), &mut top).build();
+            });
+        imgui_info.imgui_sdl2.prepare_render(&ui, window.sdl_window());
+        imgui_info.renderer.render(ui);
+    }
 }
 
 fn main() {
@@ -105,6 +106,7 @@ fn main() {
         Schedule::builder()
             .add_system(quit_event_system())
             .add_system(imgui_event_system())
+            .add_system(disable_imgui_system())
             .build());
     new_world.use_render_info(|mut render| {
         create_textures(&mut render);
