@@ -10,7 +10,7 @@ use legion::world::Entry;
 use legion::{Entity, Schedule};
 use std::path::Path;
 use crate::component::event::CloseEvent;
-use crate::window::Window;
+use crate::resources::window::Window;
 use std::sync::Mutex;
 
 pub struct World {

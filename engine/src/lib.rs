@@ -7,8 +7,9 @@ pub mod mesh;
 pub mod render_info;
 pub mod system;
 pub mod traits;
-pub mod window;
 pub mod world;
+pub mod reader_json;
+pub mod resources;
 
 pub use legion;
-pub use crate::window::Window;
+pub use resources::window::Window;

@@ -4,10 +4,14 @@ use glish_rs::shader::Shader;
 use glish_rs::texture::{PathCubeMaps, Texture};
 use std::collections::HashMap;
 use std::path::Path;
+use crate::resources::sprite_sheet::SpriteSheet;
+use crate::reader_json::sprite_sheet::read_sprite_sheet;
+
 pub struct RenderInfo {
     pub(crate) programs: HashMap<String, Program>,
     pub(crate) textures: HashMap<String, Texture>,
     pub(crate) meshs: HashMap<String, Mesh>,
+    pub(crate) sprite_sheets: HashMap<String, SpriteSheet>,
 }
 
 impl RenderInfo {
@@ -50,6 +54,14 @@ impl RenderInfo {
     pub fn add_mesh(&mut self, name: &str, mesh: Mesh) {
         self.meshs.insert(name.to_owned(), mesh);
     }
+
+    pub fn add_sprite_sheet(&mut self, name:&str, path: &Path){
+        match read_sprite_sheet(&path)
+        {
+            Some(sprite_sheet) => self.sprite_sheets.insert(String::from(name), sprite_sheet),
+            Err(err) => eprintln!("{}", err),
+        };
+    }
 }
 impl Default for RenderInfo {
     fn default() -> Self {
@@ -57,6 +69,7 @@ impl Default for RenderInfo {
             programs: HashMap::new(),
             textures: HashMap::new(),
             meshs: HashMap::new(),
+            sprite_sheets: HashMap::new(),
         }
     }
 }

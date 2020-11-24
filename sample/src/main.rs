@@ -5,22 +5,18 @@ extern crate gl;
 extern crate rand;
 extern crate sdl2;
 use engine::component::camera;
-use engine::component::camera::Camera;
 use engine::component::entity_render_info::{EntityRenderInfo, RigidBody};
 use engine::render_info::RenderInfo;
 use std::collections::HashMap;
 use engine::component::event::{
     CloseEvent
 };
-use engine::component::imgui::ImGuiInfo;
 use engine::legion::{Read, IntoQuery, Schedule};
 use engine::system::{
     draw::*,
     event::*
 };
-use engine::legion::component;
 use legion::system;
-use engine::legion::world::SubWorld;
 
 fn create_textures(world: &mut RenderInfo) {
     world.add_textures("lava", Path::new("assets/lava.png"));
@@ -48,7 +44,6 @@ pub fn disable_imgui(imgui_info : &mut engine::component::imgui::ImGuiInfo, #[re
 }
 
 
-struct NoGui;
 #[system(for_each)]
 pub fn imgui_draw(imgui_info: &mut engine::component::imgui::ImGuiInfo,
 #[resource] window: &mut engine::Window){
@@ -90,11 +85,10 @@ fn main() {
             textures
         },
     };
-    let mut left = -width as f32;
-    let mut right = width as f32;
-    let mut bottom = -height as f32;
-    let mut top = height as f32;
-    let mut display_gui = false;
+    let left = -width as f32;
+    let right = width as f32;
+    let bottom = -height as f32;
+    let top = height as f32;
 
     let mut new_world = engine::world::World::new(
         (4, 5), width, height,
@@ -128,7 +122,7 @@ fn main() {
             top,
         ),
     ));
-
+    let sprite_sheet = engine::reader_json::sprite_sheet::read_sprite_sheet(Path::new("assets/Sprite-0001.json"));
     'main: loop {
 
         let mut query = Read::<CloseEvent>::query();
@@ -138,24 +132,6 @@ fn main() {
             }
         }
         new_world.run();
-        // if display_gui {
-        //     imgui_sdl2.prepare_frame(
-        //         imgui.io_mut(),
-        //         window.sdl_window(),
-        //         &event_pump.mouse_state(),
-        //     );
-        //     let ui = imgui.frame();
-        //     Window::new(im_str!("Hello world"))
-        //         .size([300.0, 500.0], Condition::FirstUseEver)
-        //         .build(&ui, || {
-        //             ui.drag_float(im_str!("left"), &mut left).build();
-        //             ui.drag_float(im_str!("right"), &mut right).build();
-        //             ui.drag_float(im_str!("bottom"), &mut bottom).build();
-        //             ui.drag_float(im_str!("top"), &mut top).build();
-        //         });
-        //     imgui_sdl2.prepare_render(&ui, window.sdl_window());
-        //     imgui_renderer.render(ui);
-        // }
         // let mut cam_components = new_world.entry(camera).unwrap();
         // let cam = cam_components.get_component_mut::<Camera>().unwrap();
         // cam.new_orthographic(left, right, bottom, top);
