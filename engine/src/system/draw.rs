@@ -1,5 +1,4 @@
 use crate::component::camera::Camera;
-use crate::component::entity_render_info::Animation;
 use crate::component::entity_render_info::{EntityRenderInfo, RigidBody};
 use crate::mesh::SkyBox;
 use crate::render_info::RenderInfo;
