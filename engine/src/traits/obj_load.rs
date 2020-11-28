@@ -1,4 +1,4 @@
-use crate::camera::Camera;
+use crate::component::camera::Camera;
 pub trait Normals {
     fn get_normals(&self) -> &[f32; 3];
 }
@@ -9,7 +9,7 @@ pub trait TextCoords {
     fn get_tex_coords(&self) -> &[f32; 3];
 }
 pub trait Draw {
-    fn draw(&mut self, cam: &Camera);
+    fn draw(&self, cam: &Camera);
 }
 
 impl Normals for obj::Vertex {

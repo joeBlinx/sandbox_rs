@@ -3,9 +3,7 @@ name = "engine"
 version = "0.1.0"
 authors = ["joeBlinx <aiglestiven@gmail.com>"]
 edition = "2018"
-
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 obj-rs = "0.6"
 gl = "0.14"
@@ -16,3 +14,10 @@ glish_rs = {path = "../glish_rs"}
 imgui = "0.4"
 imgui-sdl2 = "0.11"
 imgui-opengl-renderer = "0.8"
+json = "0.12.4"
+
+[dependencies.legion]
+version = "0.3"
+default-features = false
+features = ["codegen"]
+

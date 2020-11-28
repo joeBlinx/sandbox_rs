@@ -1,6 +1,6 @@
-use crate::traits::{Normals, Position, TextCoords};
 use glish_rs::buffer::VboSettings;
 use obj::Obj;
+use crate::traits::obj_load::{Position, Normals, TextCoords};
 
 pub fn load_obj_with_textures<T>(obj_data: &Obj<T>) -> (Vec<f32>, [VboSettings; 3])
 where

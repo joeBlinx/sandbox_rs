@@ -104,7 +104,8 @@ impl Window {
         ImGuiInfo{
             context: imgui,
             imgui_sdl2,
-            renderer
+            renderer,
+            display:true
         }
     }
 }
