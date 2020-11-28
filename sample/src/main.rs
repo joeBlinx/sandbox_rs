@@ -122,7 +122,7 @@ fn main() {
             top,
         ),
     ));
-    let sprite_sheet = engine::reader_json::sprite_sheet::read_sprite_sheet(Path::new("assets/Sprite-0001.json"));
+    let _sprite_sheet = engine::reader_json::sprite_sheet::read_sprite_sheet(Path::new("assets/Sprite-0001.json"));
     'main: loop {
 
         let mut query = Read::<CloseEvent>::query();

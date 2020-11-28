@@ -58,8 +58,12 @@ impl RenderInfo {
     pub fn add_sprite_sheet(&mut self, name:&str, path: &Path){
         match read_sprite_sheet(&path)
         {
-            Some(sprite_sheet) => self.sprite_sheets.insert(String::from(name), sprite_sheet),
-            Err(err) => eprintln!("{}", err),
+            Ok(sprite_sheet) => {
+                self.sprite_sheets.insert(String::from(name), sprite_sheet);
+            },
+            Err(err) => {
+                eprintln!("{:#?}", err);
+            },
         };
     }
 }

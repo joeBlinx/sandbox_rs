@@ -1,4 +1,5 @@
 use crate::component::camera::Camera;
+use crate::component::entity_render_info::Animation;
 use crate::component::entity_render_info::{EntityRenderInfo, RigidBody};
 use crate::mesh::SkyBox;
 use crate::render_info::RenderInfo;
@@ -59,4 +60,17 @@ pub fn update_camera(cam: &Camera, #[resource] world_manager: &RenderInfo) {
         program.set_uni("proj", cam.get_proj());
         program.set_uni("view", cam.get_view());
     }
+}
+#[system(for_each)]
+pub fn draw_animation(render_information: &EntityRenderInfo, rigid_body: &RigidBody, animation: &Animation, #[resource] world_manager: &RenderInfo) {
+    let opengl_prog = world_manager
+        .programs
+        .get(&render_information.program)
+        .unwrap();
+    opengl_prog.set_uni("model", rigid_body.model_matrix());
+    let sprite = &world_manager.sprite_sheets.get(&animation.name).unwrap().sprites[animation.frame as usize];
+
+    opengl_prog.set_uni("uv_orig", &sprite.frame.0);
+    opengl_prog.set_uni("uv_size", &sprite.frame.1);
+    draw(render_information, world_manager);
 }

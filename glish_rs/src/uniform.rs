@@ -33,6 +33,17 @@ impl SetUniform for [f32; 3] {
         }
     }
 }
+impl SetUniform for [f32; 2] {
+    fn set_uniform(&self, uni_id: GLint) {
+        unsafe {
+            gl::Uniform2f(
+                uni_id,
+                *self.get(0).unwrap(),
+                *self.get(1).unwrap(),
+            );
+        }
+    }
+}
 
 impl SetUniform for TMat4<f32> {
     fn set_uniform(&self, uni_id: GLint) {

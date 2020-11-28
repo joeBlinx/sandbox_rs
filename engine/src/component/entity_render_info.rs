@@ -5,6 +5,10 @@ pub struct EntityRenderInfo {
     pub program: String,
     pub textures: HashMap<String, String>,
 }
+pub struct Animation{
+    pub name: String,
+    pub frame :i32,
+}
 pub struct RigidBody{
     pub position: nalgebra_glm::Vec3,
     pub rotation: nalgebra_glm::Vec3,
