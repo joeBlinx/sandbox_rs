@@ -13,3 +13,9 @@ pub mod resources;
 
 pub use legion;
 pub use resources::window::Window;
+pub use component::{
+    camera::Camera,
+    entity_render_info::*,
+    event::*,
+    imgui::*
+};

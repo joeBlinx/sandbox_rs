@@ -1,5 +1,5 @@
 use std::path::Path;
-use std::fs;
+use std::{fs, fmt};
 use std::io;
 use json::JsonValue;
 use crate::resources::sprite_sheet::{SpriteSheet, Sprite, Position, Size, Animation};
@@ -11,8 +11,11 @@ pub enum SpriteError{
     JsonErr(json::Error),
 }
 impl Debug for SpriteError{
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
-
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match &self{
+            SpriteError::IoErr(err) => err.fmt(f),
+            SpriteError::JsonErr(err) => err.fmt(f)
+        }
     }
 }
 pub fn read_sprite_sheet(json_path: &Path) -> Result<SpriteSheet, SpriteError>{

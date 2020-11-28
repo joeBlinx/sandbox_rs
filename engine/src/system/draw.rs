@@ -60,3 +60,13 @@ pub fn update_camera(cam: &Camera, #[resource] world_manager: &RenderInfo) {
         program.set_uni("view", cam.get_view());
     }
 }
+#[system(for_each)]
+pub fn draw_animation(render_information: &EntityRenderInfo, rigid_body: &RigidBody, animation: &component::Animation, #[resource] world_manager: &RenderInfo) {
+    let opengl_prog = world_manager
+        .programs
+        .get(&render_information.program)
+        .unwrap();
+    opengl_prog.set_uni("model", rigid_body.model_matrix());
+    opengl_prog.set_uni()
+    draw(render_information, world_manager);
+}
