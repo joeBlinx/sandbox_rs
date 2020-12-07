@@ -5,6 +5,7 @@ use crate::render_info::RenderInfo;
 use glish_rs::utils;
 use legion::component;
 use legion::system;
+use crate::Animation;
 
 fn draw(render_information: &EntityRenderInfo, render_info: &RenderInfo) {
     let mesh = render_info.meshs.get(&render_information.mesh).unwrap();

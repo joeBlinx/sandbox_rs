@@ -76,7 +76,7 @@ pub fn read_sprite_sheet(json_path: &Path) -> Result<SpriteSheet, SpriteError>{
         format: meta["format"].as_str().unwrap().to_owned(),
         size: Size{w:size["w"].as_f32().unwrap(),
             h:size["h"].as_f32().unwrap()},
-        scale:meta["scale"].as_i32().unwrap(),
+        scale:meta["scale"].as_str().unwrap().parse::<i32>().unwrap(),
         animation: fill_frametags(&meta["frameTags"]),
         sprites
     };
